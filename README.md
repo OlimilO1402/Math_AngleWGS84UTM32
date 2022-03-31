@@ -3,7 +3,7 @@
 
 [![GitHub](https://img.shields.io/github/license/OlimilO1402/Math_AngleWGS84UTM32?style=plastic)](https://github.com/OlimilO1402/Math_AngleWGS84UTM32/blob/master/LICENSE) 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/OlimilO1402/Math_AngleWGS84UTM32?style=plastic)](https://github.com/OlimilO1402/Math_AngleWGS84UTM32/releases/latest)
-[![Github All Releases](https://img.shields.io/github/downloads/OlimilO1402/Math_AngleWGS84UTM32/total.svg)](https://github.com/OlimilO1402/Math_AngleWGS84UTM32/releases/download/v2.3.4/AngleWGS84UTM32.zip)
+[![Github All Releases](https://img.shields.io/github/downloads/OlimilO1402/Math_AngleWGS84UTM32/total.svg)](https://github.com/OlimilO1402/Math_AngleWGS84UTM32/releases/download/v1.0.19/AngleWGS84UTM32_v1.0.19.zip)
 [![Follow](https://img.shields.io/github/followers/OlimilO1402.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/OlimilO1402/Math_AngleWGS84UTM32/watchers)
 
 Project started in march 2022.  
