@@ -60,7 +60,7 @@ Public Sub Parse(s As String)
     If i <= u Then m_Height = CDbl(sa(i)): i = i + 1
     If i <= u Then m_Name = sa(i): i = i + 1
     If m_Lat.Value < 0 Then m_Lat.Dir = "S" Else m_Lat.Dir = "N"
-    If m_Lon.Value < 0 Then m_Lon.Dir = "W" Else m_Lat.Dir = "E"
+    If m_Lon.Value < 0 Then m_Lon.Dir = "W" Else m_Lon.Dir = "E"
 End Sub
 
 Public Function HaverSineDistanceTo(other As GeoPos) As Double

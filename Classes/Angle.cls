@@ -183,14 +183,18 @@ Public Property Let Dir(ByVal Value As String)
     Dim ac As Integer: ac = AscW(Value)
     If m_Dir = Value Then
         Select Case ac
-        Case 73, 87:     m_Dir = Value 'S 'W
+        Case 83, 87:     m_Dir = Value 'S 'W
                          If Sgn(m_angle) > 0 Then m_angle = -1 * m_angle
             'eigentlich müßte man den Winkel auch mod 180 machen, damit der Betrag des Winkels nicht größer als 180 wird
         End Select
     Else
         Select Case ac
-        Case 78, 68, 79: m_Dir = Value 'N 'E or O
-        Case 73, 87:     m_Dir = Value 'S 'W
+        Case 78, 69, 79: 'N 'E or O
+            If Not (m_Dir = "O" And ac = 69) Then
+                'leave "O" as it is ;-)
+                m_Dir = Value
+            End If
+        Case 83, 87:     m_Dir = Value 'S 'W
                          If Sgn(m_angle) > 0 Then m_angle = -1 * m_angle
         End Select
     End If

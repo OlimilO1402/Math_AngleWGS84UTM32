@@ -153,6 +153,8 @@ Sub UpdateView()
 End Sub
 
 Private Sub LBFamousPlaces_Click()
+    Dim s As String: s = LBFamousPlaces.Text
+    If Len(s) = 0 Then Exit Sub
     Dim gps As GeoPos: Set gps = MNew.GeoPosS(LBFamousPlaces.Text)
     Dim utm As UTM32: Set utm = gps.ToUTM32(MUTM.Ellipsoids(22))   'the ellipsoid WGS-84
     TxtResults.Text = utm.ToStr & vbCrLf & gps.ToStr & vbCrLf & gps.ToStrKml & vbCrLf & gps.ToKoUmrLink
