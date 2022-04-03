@@ -277,6 +277,30 @@ Private Sub SeparateGMS(ByVal angleRad_in As Double, Optional gd_out As Double, 
     msi_out = VBA.Math.Round(msd_out, 2)
 End Sub
 
+Public Function Add(a As Angle) As Angle
+    Set Add = MNew.Angle(m_angle + a.Value)
+End Function
+
+Public Function Subt(a As Angle) As Angle
+    Set Subt = MNew.Angle(m_angle - a.Value)
+End Function
+
+Public Function Mul(ByVal Value As Double) As Angle
+    Set Mul = MNew.Angle(m_angle * Value)
+End Function
+
+Public Function Div(ByVal Value As Double) As Angle
+    Set Div = MNew.Angle(m_angle / Value)
+End Function
+
+Public Function Abss(a As Angle) As Angle
+    Set Abss = MNew.Angle(Math.Abs(m_angle))
+End Function
+'
+'Public Function Pow(ByVal Value As Double) As Angle
+'    Set Pow = MNew.Angle(m_angle ^ Value)
+'End Function
+    
 ' ############################## '    trigonometric functions    ' ############################## '
 Public Function Sinus() As Double            ' aka sin
     Sinus = VBA.Math.Sin(m_angle)

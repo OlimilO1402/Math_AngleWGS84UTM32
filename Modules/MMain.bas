@@ -45,13 +45,19 @@ Finally:
     Close FNr
 End Function
 
-Sub SvenScherner()
+Public Sub test()
     Dim Pi: Pi = 4 * Atn(1)
     Dim hilfswert As String
-    Dim lat1 As Double: lat1 = 33.942501
-    Dim lon1 As Double: lon1 = 118.407997
-    Dim lat2 As Double: lat2 = 40.639801
-    Dim lon2 As Double: lon2 = 73.7789
+    Dim lat1 As Double
+    Dim lon1 As Double
+    Dim lat2 As Double
+    Dim lon2 As Double
+    
+    'lat1 = 33.942501: lon1 = -118.407997
+    'lat2 = 40.639801: lon2 = -73.7789
+    
+    'lat1 = 40.748442: lon1 = -73.985664:
+    'lat2 = 55.754103: lon2 = 37.620406
     
     Dim grad_lat1     As Long:     grad_lat1 = MMath.Floor(lat1)
     Dim minuten_lat1  As Long:  minuten_lat1 = MMath.Floor((lat1 - grad_lat1) * 60)
@@ -88,7 +94,7 @@ Sub SvenScherner()
     Dim test As Double: test = 2 * ArcusSinus(VBA.Math.Sqr((Sin((lat1 - lat2) / 2)) ^ 2 + Cos(lat1) * Cos(lat2) * (Sin((lon1 - lon2) / 2)) ^ 2))
     test = (test * 180 * 60) / Pi
     
-    MsgBox MMath.Floor(test)
+    MsgBox MMath.Floor(test * 1.852)
     
 End Sub
 

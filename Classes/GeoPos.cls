@@ -94,17 +94,19 @@ Private Function HaverSineDistance(p1 As GeoPos, p2 As GeoPos) As Double
     Dim sindlon2 As Double: sindlon2 = VBA.Math.Sin(dlon / 2)
     'haversin(theta) = sin^2(theta/2) = (1-cos(theta))/2
     Dim a  As Double: a = (sindlat2 * sindlat2) + p1.Latitude.Cosinus * p2.Latitude.Cosinus * (sindlon2 * sindlon2)
-    Dim sq As Double: sq = Math.Sqr(a)
-    Dim mn As Double: mn = minD(1#, sq)
-    Dim c  As Double: c = 2 * m_Lat.ArcusSinusF(mn)
+    'Dim sq As Double: sq = Math.Sqr(a)
+    'Dim mn As Double: mn = minD(1#, Math.Sqr(a))
+    Dim c  As Double: c = 2 * m_Lat.ArcusSinusF(minD(1#, Math.Sqr(a)))
     Dim R  As Double: 'R = 6371008.767 'earth radius in m
                       'R = 6378137#
                       'R = 6356752.3142
-                      R = 6367444.66 / 0.9996
+                      'R = 6367444.66 / 0.9996
+                      R = 6369993
                       'R = 6373000
                       'R = 6369900 * 0.9996
     HaverSineDistance = R * c
 End Function
+
 'Private Function HaverSineDistance(p1 As GeoPos, p2 As GeoPos) As Double
 '
 '    'http://rosettacode.org/wiki/Haversine_formula
