@@ -164,6 +164,10 @@ Private Sub LBFamousPlaces_Click()
     TxtResults.Text = utm.ToStr & vbCrLf & gps.ToStr & vbCrLf & gps.ToStrKml & vbCrLf & gps.ToKoUmrLink
 End Sub
 
+Private Sub LBFamousPlaces_DblClick()
+    mnuEditGeoPos_Click
+End Sub
+
 Private Sub LBFamousPlaces_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = MouseButtonConstants.vbRightButton Then
         PopupMenu mnuPopup1
@@ -228,6 +232,7 @@ Private Function GetGeoPos(s As String) As GeoPos
         End If
     Next
 End Function
+
 ' ----------~~~~~~~~~~==========########## '     Menu handler     ' ##########==========~~~~~~~~~~---------- '
 Private Sub mnuStartKoUmre_Click()
     Dim s As String: s = LBFamousPlaces.Text
