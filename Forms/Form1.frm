@@ -1,13 +1,13 @@
 VERSION 5.00
 Begin VB.Form FMain 
    Caption         =   "Form1"
-   ClientHeight    =   5535
+   ClientHeight    =   5895
    ClientLeft      =   3240
    ClientTop       =   3030
    ClientWidth     =   12255
    Icon            =   "Form1.frx":0000
    LinkTopic       =   "Form1"
-   ScaleHeight     =   5535
+   ScaleHeight     =   5895
    ScaleWidth      =   12255
    Begin VB.ListBox LBTrip 
       Height          =   2010
@@ -138,6 +138,10 @@ Private Sub AddPlaces()
         .Add MNew.GeoPos(MNew.AngleS("N 48° 08' 13,91"""), MNew.AngleS("O 11° 34' 31,75"""), 515, "München, Marienplatz")
         .Add MNew.GeoPos(MNew.AngleS("N 40° 44' 54,39"""), MNew.AngleS("W 73° 59' 08,39"""), 35, "New York, Empire State Building")
         .Add MNew.GeoPos(MNew.AngleS("S 22° 57' 06,95"""), MNew.AngleS("W 43° 12' 37,66"""), 704, "Rio de Janeiro, Cristo Redentor")
+        .Add MNew.GeoPos(MNew.AngleS("N 51° 03' 03,96"""), MNew.AngleS("O 05° 51' 58,81"""), 34, "Deutschland, westlichster Punkt")
+        .Add MNew.GeoPos(MNew.AngleS("N 51° 16' 22,54"""), MNew.AngleS("O 15° 02' 30,91"""), 163, "Deutschland, östlichster Punkt")
+        .Add MNew.GeoPos(MNew.AngleS("N 55° 03' 30,95"""), MNew.AngleS("O 08° 25' 03,98"""), 0, "Deutschland, nördlichster Punkt")
+        .Add MNew.GeoPos(MNew.AngleS("N 47° 16' 12,40"""), MNew.AngleS("O 10° 10' 42,04"""), 0, "Deutschland, südlichster Punkt")
     End With
     UpdateView
 End Sub
