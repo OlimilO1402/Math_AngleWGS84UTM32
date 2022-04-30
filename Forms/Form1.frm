@@ -101,13 +101,28 @@ Option Explicit
 'https://www.koordinaten-umrechner.de/decimal/51.000000,10.000000?karte=OpenStreetMap&zoom=8
 Private m_FamousPlaces As Collection 'Of GeoPos
 Private m_Trip         As Collection
-Private m_pfn          As String
+Private m_pfnTmp       As String
+Private m_pfnDoc       As String
+'https://earth.google.com/web
+
+'Wünsche:
+' * List-funktionen bei Trip
+'   - Entries rauf/runter schieben
+' * Strings verketten mit class Stringbuilder
+' * Datei Operationen mit class PathFileName
+' * rausfinden wie man kml-Datei an webbasierten Google-Earth sendet
+'   https://www.youtube.com/watch?v=-wXcH5Uzsos
+' * Falls alte Desktop version von Google-Earth-Pro vorhanden
+'        Option anbieten ob neuer oder webbasierter verwendet werden soll
+'   Sonst das Webbasierte Google-Earth verwenden
+'
 
 Private Sub Form_Load()
     Me.Caption = "Angle,WGS84,UTM32 v" & App.Major & "." & App.Minor & "." & App.Revision
     AddPlaces
     Set m_Trip = New Collection
-    m_pfn = Environ("Temp") & "\" & "AngleWGS84UTM32GoogleEarth.kml"
+    m_pfnTmp = Environ("Temp") & "\" & "AngleWGS84UTM32GoogleEarth.kml"
+    m_pfnDoc = Environ("Homedrive") & Environ("Homepath") & "\Documents\" & "AngleWGS84UTM32GoogleEarth.kml"
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
@@ -348,10 +363,17 @@ Private Sub mnuTripStartGEarth_Click()
             "    </Placemark>" & vbCrLf & _
             "</Document>" & vbCrLf & _
             "</kml>"
-    If FileExists(m_pfn) Then Kill m_pfn
-    If SaveFile(m_pfn, s) Then
+    Dim pfn As String
+    pfn = m_pfnDoc
+    If FileExists(pfn) Then Kill pfn
+    If SaveFile(pfn, s) Then
         'maybe here edit the path to your Google Earth installation
-        Dim cmd As String: cmd = """" & "C:\Program Files\Google\Google Earth Pro\client\googleearth.exe" & """" & " " & """" & m_pfn & """"
-        Shell cmd, vbNormalFocus
+        Dim pfn_GE As String: pfn_GE = "C:\Program Files\Google\Google Earth Pro\client\googleearth.exe"
+        If FileExists(pfn_GE) Then
+            Dim cmd As String: cmd = """" & pfn_GE & """" & " " & """" & pfn & """"
+            Shell cmd, vbNormalFocus
+        Else
+            'trying to load the kml-file to Google-Earth-Web
+        End If
     End If
 End Sub
