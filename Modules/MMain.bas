@@ -1,7 +1,23 @@
 Attribute VB_Name = "MMain"
 Option Explicit
+Public pathTemp  As String 'path to tmp directory
+Public pathDocs  As String 'path to documents directory
+Public pathProgs As String 'path to program files directory
+Public pfnGE     As String 'pathfilename to google earth pro (or link to google earth web)
+Public pfnFF     As String 'pathfilename to firefox
+Public fnKml     As String 'default filename of kml file
 
 Sub Main()
+    
+    pathTemp = Environ("Temp")
+    pathDocs = Environ("Homedrive") & Environ("Homepath") & "\Documents\"
+    pathProgs = Environ("ProgramW6432")
+    
+    'maybe here edit the path to your default or preferred internet browser
+    pfnFF = pathProgs & "\Mozilla Firefox\firefox.exe"
+    pfnGE = pathProgs & "\Google\Google Earth Pro\client\googleearth.exe"
+    fnKml = "AngleWGS84UTM32GoogleEarth.kml"
+    
     MMath.Init
     MUTM.Init
     FMain.Show

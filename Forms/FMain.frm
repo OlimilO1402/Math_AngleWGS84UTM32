@@ -1,12 +1,12 @@
 VERSION 5.00
 Begin VB.Form FMain 
-   Caption         =   "Form1"
+   Caption         =   "FMain"
    ClientHeight    =   5895
    ClientLeft      =   3240
-   ClientTop       =   3030
+   ClientTop       =   3330
    ClientWidth     =   12255
-   Icon            =   "Form1.frx":0000
-   LinkTopic       =   "Form1"
+   Icon            =   "FMain.frx":0000
+   LinkTopic       =   "FMain"
    ScaleHeight     =   5895
    ScaleWidth      =   12255
    Begin VB.ListBox LBTrip 
@@ -43,7 +43,7 @@ Begin VB.Form FMain
    End
    Begin VB.Label Label1 
       AutoSize        =   -1  'True
-      Caption         =   "Geo-Positions of Your Famous Places:"
+      Caption         =   "Geo-positions of your famous places:"
       Height          =   195
       Left            =   60
       TabIndex        =   4
@@ -59,9 +59,8 @@ Begin VB.Form FMain
       Top             =   0
       Width           =   855
    End
-   Begin VB.Menu mnuPopup1 
-      Caption         =   "mnuPopup1"
-      Visible         =   0   'False
+   Begin VB.Menu mnuPopGPS 
+      Caption         =   "mnuPopGPS"
       Begin VB.Menu mnuStartKoUmre 
          Caption         =   "Start Koordinaten-Umrechner.de"
       End
@@ -77,18 +76,39 @@ Begin VB.Form FMain
       Begin VB.Menu mnuAddToTrip 
          Caption         =   "Add To Trip"
       End
-      Begin VB.Menu mnuOpenTempDir 
-         Caption         =   "Open Temp-Folder"
-      End
    End
-   Begin VB.Menu mnuPopup2 
-      Caption         =   "mnuPopup2"
-      Visible         =   0   'False
-      Begin VB.Menu mnuTripRemovePlace 
-         Caption         =   "Remove From Trip"
-      End
+   Begin VB.Menu mnuPopTrip 
+      Caption         =   "mnuPopTrip"
       Begin VB.Menu mnuTripStartGEarth 
          Caption         =   "Show Trip in Google Earth"
+      End
+      Begin VB.Menu mnuTripMoveUp 
+         Caption         =   "Move ^_up_^"
+      End
+      Begin VB.Menu mnuTripMoveDown 
+         Caption         =   "Move v_down_v"
+      End
+      Begin VB.Menu mnuTripRemovePlace 
+         Caption         =   "Remove Item"
+      End
+      Begin VB.Menu mnuTripClear 
+         Caption         =   "Clear Trip"
+      End
+   End
+   Begin VB.Menu mnuPopOptions 
+      Caption         =   "mnuPopOptions"
+      Begin VB.Menu mnuOptFolder 
+         Caption         =   "Write kml-file to Folder"
+         Begin VB.Menu mnuOptFolderTemp 
+            Caption         =   "Temp"
+            Checked         =   -1  'True
+         End
+         Begin VB.Menu mnuOptFolderDocs 
+            Caption         =   "Documents"
+         End
+      End
+      Begin VB.Menu mnuOptFolderOpen 
+         Caption         =   "Open Folder: Temp"
       End
    End
 End
@@ -100,33 +120,40 @@ Attribute VB_Exposed = False
 Option Explicit
 'https://www.koordinaten-umrechner.de/decimal/51.000000,10.000000?karte=OpenStreetMap&zoom=8
 Private m_FamousPlaces As Collection 'Of GeoPos
-Private m_Trip         As Collection
-Private m_pfnTmp       As String
-Private m_pfnDoc       As String
+Private m_Trip         As Collection 'Of GeoPos
+Private m_pfnKml       As String 'pathfilename of kml-file
 'https://earth.google.com/web
 
-'Wünsche:
-' * List-funktionen bei Trip
-'   - Entries rauf/runter schieben
-' * Strings verketten mit class Stringbuilder
-' * Datei Operationen mit class PathFileName
-' * rausfinden wie man kml-Datei an webbasierten Google-Earth sendet
+'Wishes:
+' * do file operations with class PathFileName get the
+'   chance to call the default program for html-files
+' * check how to send kml-file to Google-Earth Web
 '   https://www.youtube.com/watch?v=-wXcH5Uzsos
-' * Falls alte Desktop version von Google-Earth-Pro vorhanden
-'        Option anbieten ob neuer oder webbasierter verwendet werden soll
-'   Sonst das Webbasierte Google-Earth verwenden
-'
+' * if desktop version Google-Earth-Pro exists
+'        offer option for usigng old (pro) or new (web)
+'   else use google earth web
 
 Private Sub Form_Load()
-    Me.Caption = "Angle,WGS84,UTM32 v" & App.Major & "." & App.Minor & "." & App.Revision
+
+    Me.Caption = "Angle, GeoPos(gps)WGS84,UTM32 v" & App.Major & "." & App.Minor & "." & App.Revision
     AddPlaces
     Set m_Trip = New Collection
-    m_pfnTmp = Environ("Temp") & "\" & "AngleWGS84UTM32GoogleEarth.kml"
-    m_pfnDoc = Environ("Homedrive") & Environ("Homepath") & "\Documents\" & "AngleWGS84UTM32GoogleEarth.kml"
+    
+    m_pfnKml = pathTemp & "\" & fnKml
+    
+    mnuPopGPS.Visible = False
+    mnuPopTrip.Visible = False
+    mnuPopOptions.Visible = False
+End Sub
+
+Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+    If Button = MouseButtonConstants.vbRightButton Then
+        PopupMenu mnuPopOptions
+    End If
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-    If FileExists(m_pfn) Then Kill m_pfn
+    If FileExists(m_pfnKml) Then Kill m_pfnKml
 End Sub
 
 Private Sub Form_Resize()
@@ -185,13 +212,27 @@ End Sub
 
 Private Sub LBFamousPlaces_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = MouseButtonConstants.vbRightButton Then
-        PopupMenu mnuPopup1
+        PopupMenu mnuPopGPS
     End If
+End Sub
+
+Private Sub LBTrip_Click()
+    If LBTrip.ListCount = 1 Then
+        mnuTripMoveUp.Enabled = False
+        mnuTripMoveDown.Enabled = False
+        Exit Sub
+    End If
+    mnuTripMoveUp.Enabled = True
+    mnuTripMoveDown.Enabled = True
+    Select Case LBTrip.ListIndex
+    Case 0:                    mnuTripMoveUp.Enabled = False
+    Case LBTrip.ListCount - 1: mnuTripMoveDown.Enabled = False
+    End Select
 End Sub
 
 Private Sub LBTrip_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = MouseButtonConstants.vbRightButton Then
-        PopupMenu mnuPopup2
+        PopupMenu mnuPopTrip
     End If
 End Sub
 
@@ -248,13 +289,13 @@ Private Function GetGeoPos(s As String) As GeoPos
     Next
 End Function
 
-' ----------~~~~~~~~~~==========########## '     Menu handler     ' ##########==========~~~~~~~~~~---------- '
+' ----------~~~~~~~~~~==========########## '     Menu handler    ' ##########==========~~~~~~~~~~---------- '
+' ----------~~~~~~~~~~==========########## '      mnuPopGPS      ' ##########==========~~~~~~~~~~---------- '
 Private Sub mnuStartKoUmre_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
     Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
-    'maybe here edit the path to your preferred internet browser
-    Dim cmd As String: cmd = """" & "C:\Program Files\Mozilla Firefox\firefox.exe" & """" & " " & """" & gps.ToKoUmrLink & """"
+    Dim cmd As String: cmd = """" & pfnFF & """" & " " & """" & gps.ToKoUmrLink & """"
     Shell cmd, vbNormalFocus
 End Sub
 
@@ -262,10 +303,10 @@ Private Sub mnuStartGEarth_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
     Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
-    If FileExists(m_pfn) Then Kill m_pfn
-    If SaveFile(m_pfn, gps.ToStrKml) Then
+    If FileExists(m_pfnKml) Then Kill m_pfnKml
+    If SaveFile(m_pfnKml, gps.ToStrKml) Then
         'maybe here edit the path to your Google Earth installation
-        Dim cmd As String: cmd = """" & "C:\Program Files\Google\Google Earth Pro\client\googleearth.exe" & """" & " " & """" & m_pfn & """"
+        Dim cmd As String: cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
         Shell cmd, vbNormalFocus
     End If
 End Sub
@@ -287,8 +328,6 @@ Private Sub mnuEditGeoPos_Click()
     If ns = vbNullString Then Exit Sub 'Cancel
     gps.Parse ns
     LBFamousPlaces.List(LBFamousPlaces.ListIndex) = gps.ToStr
-    'UpdateView
-    'UpdateTripLengthView
 End Sub
 
 Private Sub mnuAddToTrip_Click()
@@ -301,18 +340,7 @@ Private Sub mnuAddToTrip_Click()
     UpdateTripLengthView
 End Sub
 
-Private Sub mnuOpenTempDir_Click()
-    Dim cmd As String: cmd = "explorer.exe " & Environ("Temp") & "\"
-    Shell cmd, vbNormalFocus
-End Sub
-
-Private Sub mnuTripRemovePlace_Click()
-    Dim i As Long: i = LBTrip.ListIndex
-    If i < 0 Then MsgBox "Select item first": Exit Sub
-    m_Trip.Remove i + 1
-    LBTrip.RemoveItem i
-    UpdateTripLengthView
-End Sub
+' ----------~~~~~~~~~~==========########## '      mnuPopTrip      ' ##########==========~~~~~~~~~~---------- '
 
 Private Sub mnuTripStartGEarth_Click()
     If m_Trip.Count < 2 Then MsgBox "Minimum 2 Places in a trip!": Exit Sub
@@ -363,17 +391,78 @@ Private Sub mnuTripStartGEarth_Click()
             "    </Placemark>" & vbCrLf & _
             "</Document>" & vbCrLf & _
             "</kml>"
-    Dim pfn As String
-    pfn = m_pfnDoc
-    If FileExists(pfn) Then Kill pfn
-    If SaveFile(pfn, s) Then
+    If FileExists(m_pfnKml) Then Kill m_pfnKml
+    If SaveFile(m_pfnKml, s) Then
         'maybe here edit the path to your Google Earth installation
-        Dim pfn_GE As String: pfn_GE = "C:\Program Files\Google\Google Earth Pro\client\googleearth.exe"
-        If FileExists(pfn_GE) Then
-            Dim cmd As String: cmd = """" & pfn_GE & """" & " " & """" & pfn & """"
+        If FileExists(pfnGE) Then
+            Dim cmd As String: cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
             Shell cmd, vbNormalFocus
         Else
             'trying to load the kml-file to Google-Earth-Web
+            MsgBox "Please install desktop-version Google Earth Pro"
         End If
     End If
+End Sub
+
+Private Sub mnuTripMoveUp_Click()
+    Dim i As Long: i = LBTrip.ListIndex
+    If i < 0 Then MsgBox "Select item first": Exit Sub
+    'View aktualisieren
+    Dim tmp As String
+    tmp = LBTrip.List(i)
+    LBTrip.List(i) = LBTrip.List(i - 1)
+    LBTrip.List(i - 1) = tmp
+    LBTrip.ListIndex = i - 1
+    i = i + 1  'collection is 1-based
+    Dim gps As GeoPos: Set gps = m_Trip.Item(i)
+    m_Trip.Remove i
+    m_Trip.Add gps, , i - 1
+End Sub
+
+Private Sub mnuTripMoveDown_Click()
+    Dim i As Long: i = LBTrip.ListIndex
+    If i < 0 Then MsgBox "Select item first": Exit Sub
+    Dim tmp As String
+    tmp = LBTrip.List(i)
+    LBTrip.List(i) = LBTrip.List(i + 1)
+    LBTrip.List(i + 1) = tmp
+    LBTrip.ListIndex = i + 1
+    i = i + 1 'collection is 1-based
+    Dim gps As GeoPos: Set gps = m_Trip.Item(i)
+    m_Trip.Remove i
+    m_Trip.Add gps, , , i '- 1
+End Sub
+
+Private Sub mnuTripRemovePlace_Click()
+    Dim i As Long: i = LBTrip.ListIndex
+    If i < 0 Then MsgBox "Select item first": Exit Sub
+    m_Trip.Remove i + 1
+    LBTrip.RemoveItem i
+    UpdateTripLengthView
+End Sub
+
+Private Sub mnuTripClear_Click()
+    LBTrip.Clear
+    Set m_Trip = New Collection
+End Sub
+
+' ----------~~~~~~~~~~==========########## '      mnuPopOpt      ' ##########==========~~~~~~~~~~---------- '
+Private Sub mnuOptFolderDocs_Click()
+    mnuOptFolderDocs.Checked = True
+    mnuOptFolderTemp.Checked = False
+    mnuOptFolderOpen.Caption = "Open Folder: Documents"
+    m_pfnKml = pathDocs & "\" & fnKml
+End Sub
+
+Private Sub mnuOptFolderTemp_Click()
+    mnuOptFolderDocs.Checked = False
+    mnuOptFolderTemp.Checked = True
+    mnuOptFolderOpen.Caption = "Open Folder: Temp"
+    m_pfnKml = pathTemp & "\" & fnKml
+End Sub
+
+Private Sub mnuOptFolderOpen_Click()
+    Dim cmd As String
+    cmd = "explorer.exe " & IIf(mnuOptFolderTemp.Checked, pathTemp, pathDocs)
+    Shell cmd, vbNormalFocus
 End Sub
