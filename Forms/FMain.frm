@@ -82,6 +82,10 @@ Begin VB.Form FMain
       Begin VB.Menu mnuTripStartGEarth 
          Caption         =   "Show Trip in Google Earth"
       End
+      Begin VB.Menu mnuTripShowRoute 
+         Caption         =   "Show Route in Google Earth (from:to:)"
+         Visible         =   0   'False
+      End
       Begin VB.Menu mnuTripMoveUp 
          Caption         =   "Move ^_up_^"
       End
@@ -109,6 +113,9 @@ Begin VB.Form FMain
       End
       Begin VB.Menu mnuOptFolderOpen 
          Caption         =   "Open Folder: Temp"
+      End
+      Begin VB.Menu mnuOptShowAngles 
+         Caption         =   "Show Angle-Dialog"
       End
    End
 End
@@ -279,6 +286,18 @@ Private Function GetTripForKml() As String
     GetTripForKml = s
 End Function
 
+Private Function GetRouteForGE() As String
+    If m_Trip.Count < 2 Then Exit Function
+    Dim i As Long: i = 1
+    Dim gps As GeoPos
+    
+    Set gps = m_Trip.Item(1)
+    GetRouteForGE = "from:" & Trim(Str(gps.Latitude.ToGrad)) & "," & Trim(Str(gps.Longitude.ToGrad))
+    
+    Set gps = m_Trip.Item(2)
+    GetRouteForGE = GetRouteForGE & " to:" & Trim(Str(gps.Latitude.ToGrad)) & "," & Trim(Str(gps.Longitude.ToGrad))
+End Function
+
 Private Function GetGeoPos(s As String) As GeoPos
     Dim gps As GeoPos
     For Each gps In m_FamousPlaces
@@ -341,6 +360,25 @@ Private Sub mnuAddToTrip_Click()
 End Sub
 
 ' ----------~~~~~~~~~~==========########## '      mnuPopTrip      ' ##########==========~~~~~~~~~~---------- '
+
+Private Sub mnuTripShowRoute_Click()
+    If m_Trip.Count < 2 Then MsgBox "Minimum 2 Places in a route!": Exit Sub
+    Dim ft As String: ft = GetRouteForGE 'FromTo
+    If Len(ft) = 0 Then Exit Sub
+    If FileExists(pfnGE) Then
+        'OM: 2022-05-08
+        'NOPE DOES NOT WORK; NOT WITH GOOGLE EARTH AND NOT WITH GOOGLE MAPS
+        'THE LINKS MUST BE SOMEWHAT DIFFERENT, DONT KNOW HOW
+        'Dim cmd As String: cmd = """" & pfnGE & """" & " " & """" & ft & """"
+        Dim cmd As String: cmd = """" & pfnFF & """" & " " & """" & "https://www.google.com/maps/dir/" & ft
+        Shell cmd, vbNormalFocus
+        Debug.Print cmd
+    Else
+        'trying to load the kml-file to Google-Earth-Web
+        MsgBox "Please install desktop-version Google Earth Pro"
+    End If
+
+End Sub
 
 Private Sub mnuTripStartGEarth_Click()
     If m_Trip.Count < 2 Then MsgBox "Minimum 2 Places in a trip!": Exit Sub
@@ -466,3 +504,8 @@ Private Sub mnuOptFolderOpen_Click()
     cmd = "explorer.exe " & IIf(mnuOptFolderTemp.Checked, pathTemp, pathDocs)
     Shell cmd, vbNormalFocus
 End Sub
+
+Private Sub mnuOptShowAngles_Click()
+    FTestAngle.Show
+End Sub
+
