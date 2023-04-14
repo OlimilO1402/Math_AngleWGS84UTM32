@@ -21,13 +21,13 @@ Sub Main()
     MMath.Init
     MUTM.Init
     FMain.Show
-    FTestAngle.Show
+    'FTestAngle.Show
 End Sub
 
-Public Function GetStr(ByVal v As Double) As String
+Public Function GetStr(ByVal V As Double) As String
     'Converts a Double to String by using the function Str for ensuring "." as a decimalseparator
     'we could also use cdbl and eventually replace a comma (",") with a period (".")
-    GetStr = Trim(Str(v))
+    GetStr = Trim(Str(V))
     Dim c As Integer: c = AscW(Left(GetStr, 1))
     Select Case c
     'Asc("0") = 48; Asc("9") = 57;
@@ -48,15 +48,15 @@ Public Function FileExists(ByVal FileName As String) As Boolean
     On Error GoTo 0
 End Function
 
-Public Function SaveFile(pfn As String, FCont As String) As Boolean
+Public Function SaveFile(PFN As String, FCont As String) As Boolean
 Try: On Error GoTo Catch
     Dim FNr As Integer: FNr = FreeFile
-    Open pfn For Binary Access Write As FNr
+    Open PFN For Binary Access Write As FNr
     Put FNr, , FCont
     SaveFile = True
     GoTo Finally
 Catch:
-    MsgBox "Error during writing file occored:" & vbCrLf & pfn
+    MsgBox "Error during writing file occored:" & vbCrLf & PFN
 Finally:
     Close FNr
 End Function

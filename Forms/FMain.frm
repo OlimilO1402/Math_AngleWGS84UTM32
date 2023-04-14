@@ -1,24 +1,26 @@
 VERSION 5.00
 Begin VB.Form FMain 
    Caption         =   "FMain"
-   ClientHeight    =   5895
+   ClientHeight    =   6615
    ClientLeft      =   3240
    ClientTop       =   3330
-   ClientWidth     =   12255
+   ClientWidth     =   12750
+   BeginProperty Font 
+      Name            =   "Segoe UI"
+      Size            =   8.25
+      Charset         =   0
+      Weight          =   400
+      Underline       =   0   'False
+      Italic          =   0   'False
+      Strikethrough   =   0   'False
+   EndProperty
    Icon            =   "FMain.frx":0000
    LinkTopic       =   "FMain"
-   ScaleHeight     =   5895
-   ScaleWidth      =   12255
+   ScaleHeight     =   6615
+   ScaleWidth      =   12750
    Begin VB.ListBox LBTrip 
-      Height          =   2010
-      Left            =   6120
-      TabIndex        =   2
-      Top             =   240
-      Width           =   6135
-   End
-   Begin VB.TextBox TxtResults 
       BeginProperty Font 
-         Name            =   "Courier New"
+         Name            =   "Segoe UI"
          Size            =   9
          Charset         =   0
          Weight          =   400
@@ -26,55 +28,105 @@ Begin VB.Form FMain
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   3255
+      Height          =   2985
+      Left            =   6360
+      OLEDragMode     =   1  'Automatisch
+      OLEDropMode     =   1  'Manuell
+      TabIndex        =   2
+      Top             =   240
+      Width           =   6375
+   End
+   Begin VB.TextBox TxtResults 
+      BeginProperty Font 
+         Name            =   "Consolas"
+         Size            =   9
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   3375
       Left            =   0
       MultiLine       =   -1  'True
       ScrollBars      =   3  'Beides
       TabIndex        =   1
-      Top             =   2280
-      Width           =   12255
+      Top             =   3240
+      Width           =   12735
    End
    Begin VB.ListBox LBFamousPlaces 
-      Height          =   2010
+      BeginProperty Font 
+         Name            =   "Segoe UI"
+         Size            =   9
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   2985
       Left            =   0
+      OLEDragMode     =   1  'Automatisch
+      OLEDropMode     =   1  'Manuell
       TabIndex        =   0
       Top             =   240
-      Width           =   6135
+      Width           =   6375
    End
    Begin VB.Label Label1 
       AutoSize        =   -1  'True
       Caption         =   "Geo-positions of your famous places:"
-      Height          =   195
+      BeginProperty Font 
+         Name            =   "Segoe UI"
+         Size            =   9
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   225
       Left            =   60
       TabIndex        =   4
       Top             =   0
-      Width           =   2700
+      Width           =   2955
    End
    Begin VB.Label LblTripResults 
       AutoSize        =   -1  'True
       Caption         =   "Trip Length:"
-      Height          =   195
-      Left            =   6120
+      BeginProperty Font 
+         Name            =   "Segoe UI"
+         Size            =   9
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   225
+      Left            =   6360
       TabIndex        =   3
       Top             =   0
-      Width           =   855
+      Width           =   945
    End
    Begin VB.Menu mnuPopGPS 
       Caption         =   "mnuPopGPS"
+      Begin VB.Menu mnuGeoPosAdd 
+         Caption         =   "Add New Geo Position"
+      End
+      Begin VB.Menu mnuGeoPosEdit 
+         Caption         =   "Edit Geo Position"
+      End
       Begin VB.Menu mnuStartKoUmre 
          Caption         =   "Start Koordinaten-Umrechner.de"
       End
       Begin VB.Menu mnuStartGEarth 
          Caption         =   "Show Position in Google Earth"
       End
-      Begin VB.Menu mnuAddGeoPos 
-         Caption         =   "Add New Position"
-      End
-      Begin VB.Menu mnuEditGeoPos 
-         Caption         =   "Edit Position"
-      End
       Begin VB.Menu mnuAddToTrip 
          Caption         =   "Add To Trip"
+      End
+      Begin VB.Menu mnuGeoPosDelete 
+         Caption         =   "Delete Item"
       End
    End
    Begin VB.Menu mnuPopTrip 
@@ -164,33 +216,33 @@ Private Sub Form_Unload(Cancel As Integer)
 End Sub
 
 Private Sub Form_Resize()
-    Dim l As Single, T As Single: T = LBFamousPlaces.Top
+    Dim L As Single, T As Single: T = LBFamousPlaces.Top
     Dim W As Single: W = Me.ScaleWidth / 2
     Dim H As Single: H = Me.ScaleHeight - LBFamousPlaces.Top - TxtResults.Height
-    If W > 0 And H > 0 Then LBFamousPlaces.Move l, T, W, H
-    l = LBFamousPlaces.Left + LBFamousPlaces.Width
-    If W > 0 And H > 0 Then LBTrip.Move l, T, W, H: LblTripResults.Left = l
-    l = 0
+    If W > 0 And H > 0 Then LBFamousPlaces.Move L, T, W, H
+    L = LBFamousPlaces.Left + LBFamousPlaces.Width
+    If W > 0 And H > 0 Then LBTrip.Move L, T, W, H: LblTripResults.Left = L
+    L = 0
     H = TxtResults.Height 'Me.ScaleHeight - T - LBFamousPlaces.Height
     T = Me.ScaleHeight - H
     W = Me.ScaleWidth
-    If W > 0 And H > 0 Then TxtResults.Move l, T, W, H
+    If W > 0 And H > 0 Then TxtResults.Move L, T, W, H
 End Sub
 
 Private Sub AddPlaces()
     Set m_FamousPlaces = New Collection
     With m_FamousPlaces
-        .Add MNew.GeoPos(MNew.AngleS("N 52° 30' 35,31"""), MNew.AngleS("O 13° 22' 32,41"""), 34, "Berlin, Potsdamer Platz")
-        .Add MNew.GeoPos(MNew.AngleS("N 48° 51' 29,69"""), MNew.AngleS("O 02° 17' 40,38"""), 216, "Paris, Eiffelturm")
-        .Add MNew.GeoPos(MNew.AngleS("N 51° 30' 02,48"""), MNew.AngleS("W 00° 07' 28,53"""), 85, "London, Big Ben")
-        .Add MNew.GeoPos(MNew.AngleS("N 55° 45' 14,77"""), MNew.AngleS("O 37° 37' 13,46"""), 147, "Moskau, Roter Platz")
-        .Add MNew.GeoPos(MNew.AngleS("N 48° 08' 13,91"""), MNew.AngleS("O 11° 34' 31,75"""), 515, "München, Marienplatz")
-        .Add MNew.GeoPos(MNew.AngleS("N 40° 44' 54,39"""), MNew.AngleS("W 73° 59' 08,39"""), 35, "New York, Empire State Building")
-        .Add MNew.GeoPos(MNew.AngleS("S 22° 57' 06,95"""), MNew.AngleS("W 43° 12' 37,66"""), 704, "Rio de Janeiro, Cristo Redentor")
-        .Add MNew.GeoPos(MNew.AngleS("N 51° 03' 03,96"""), MNew.AngleS("O 05° 51' 58,81"""), 34, "Deutschland, westlichster Punkt")
-        .Add MNew.GeoPos(MNew.AngleS("N 51° 16' 22,54"""), MNew.AngleS("O 15° 02' 30,91"""), 163, "Deutschland, östlichster Punkt")
-        .Add MNew.GeoPos(MNew.AngleS("N 55° 03' 30,95"""), MNew.AngleS("O 08° 25' 03,98"""), 0, "Deutschland, nördlichster Punkt")
-        .Add MNew.GeoPos(MNew.AngleS("N 47° 16' 12,40"""), MNew.AngleS("O 10° 10' 42,04"""), 0, "Deutschland, südlichster Punkt")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 52° 30' 35,31"""), MNew.AngleDecS("O 13° 22' 32,41"""), 34, "Berlin, Potsdamer Platz")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 48° 51' 29,69"""), MNew.AngleDecS("O 02° 17' 40,38"""), 216, "Paris, Eiffelturm")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 51° 30' 02,48"""), MNew.AngleDecS("W 00° 07' 28,53"""), 85, "London, Big Ben")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 55° 45' 14,77"""), MNew.AngleDecS("O 37° 37' 13,46"""), 147, "Moskau, Roter Platz")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 48° 08' 13,91"""), MNew.AngleDecS("O 11° 34' 31,75"""), 515, "München, Marienplatz")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 40° 44' 54,39"""), MNew.AngleDecS("W 73° 59' 08,39"""), 35, "New York, Empire State Building")
+        .Add MNew.GeoPos(MNew.AngleDecS("S 22° 57' 06,95"""), MNew.AngleDecS("W 43° 12' 37,66"""), 704, "Rio de Janeiro, Cristo Redentor")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 51° 03' 03,96"""), MNew.AngleDecS("O 05° 51' 58,81"""), 34, "Deutschland, westlichster Punkt")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 51° 16' 22,54"""), MNew.AngleDecS("O 15° 02' 30,91"""), 163, "Deutschland, östlichster Punkt")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 55° 03' 30,95"""), MNew.AngleDecS("O 08° 25' 03,98"""), 0, "Deutschland, nördlichster Punkt")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 47° 16' 12,40"""), MNew.AngleDecS("O 10° 10' 42,04"""), 0, "Deutschland, südlichster Punkt")
     End With
     UpdateView
 End Sub
@@ -214,7 +266,7 @@ Private Sub LBFamousPlaces_Click()
 End Sub
 
 Private Sub LBFamousPlaces_DblClick()
-    mnuEditGeoPos_Click
+    mnuGeoPosEdit_Click
 End Sub
 
 Private Sub LBFamousPlaces_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
@@ -241,6 +293,10 @@ Private Sub LBTrip_MouseUp(Button As Integer, Shift As Integer, x As Single, y A
     If Button = MouseButtonConstants.vbRightButton Then
         PopupMenu mnuPopTrip
     End If
+End Sub
+
+Private Sub LBTrip_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, x As Single, y As Single)
+    mnuAddToTrip_Click
 End Sub
 
 Sub UpdateTripLengthView()
@@ -310,6 +366,44 @@ End Function
 
 ' ----------~~~~~~~~~~==========########## '     Menu handler    ' ##########==========~~~~~~~~~~---------- '
 ' ----------~~~~~~~~~~==========########## '      mnuPopGPS      ' ##########==========~~~~~~~~~~---------- '
+
+Private Sub mnuGeoPosAdd_Click()
+    'Dim s As String: s = InputBox("Add a new Place, values separated by semicolon.", "Add New Place: Lat; Lon; Height; Name", "45°; 10°; 150; My new place")
+    'If s = vbNullString Then Exit Sub 'Cancel
+    
+    Dim s As String: s = "45°; 10°; 150; My new place"
+    Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
+    
+    FGeoPos.Move Me.Left + (Me.Width - FGeoPos.Width) / 2, Me.Top + (Me.Height - FGeoPos.Height) / 2
+    If FGeoPos.ShowDialog(gps, Me) = vbCancel Then Exit Sub
+    
+    m_FamousPlaces.Add gps
+    UpdateView
+End Sub
+
+Private Sub mnuGeoPosEdit_Click()
+    Dim s As String: s = LBFamousPlaces.Text
+    If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
+    Dim gps As GeoPos: Set gps = GetGeoPos(s)
+    If gps Is Nothing Then Exit Sub
+    
+    FGeoPos.Move Me.Left + (Me.Width - FGeoPos.Width) / 2, Me.Top + (Me.Height - FGeoPos.Height) / 2
+    If FGeoPos.ShowDialog(gps, Me) = vbCancel Then Exit Sub
+    
+    'Dim ns As String: ns = InputBox("Edit Position, values separated by semicolon.", "Edit Position: Lat; Lon; Height; Name", s)
+    'If ns = vbNullString Then Exit Sub 'Cancel
+    'gps.Parse ns
+    LBFamousPlaces.List(LBFamousPlaces.ListIndex) = gps.ToStr
+End Sub
+
+Private Sub mnuGeoPosDelete_Click()
+    Dim i As Long: i = LBFamousPlaces.ListIndex
+    If i < 0 Then Exit Sub
+    m_FamousPlaces.Remove i + 1
+    LBFamousPlaces.RemoveItem i
+    'UpdateView
+End Sub
+
 Private Sub mnuStartKoUmre_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
@@ -328,25 +422,6 @@ Private Sub mnuStartGEarth_Click()
         Dim cmd As String: cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
         Shell cmd, vbNormalFocus
     End If
-End Sub
-
-Private Sub mnuAddGeoPos_Click()
-    Dim s As String: s = InputBox("Add a new Place, values separated by semicolon.", "Add New Place: Lat; Lon; Height; Name", "45°; 10°; 150; My new place")
-    If s = vbNullString Then Exit Sub 'Cancel
-    Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
-    m_FamousPlaces.Add gps
-    UpdateView
-End Sub
-
-Private Sub mnuEditGeoPos_Click()
-    Dim s As String: s = LBFamousPlaces.Text
-    If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
-    Dim gps As GeoPos: Set gps = GetGeoPos(s)
-    If gps Is Nothing Then Exit Sub
-    Dim ns As String: ns = InputBox("Edit Position, values separated by semicolon.", "Edit Position: Lat; Lon; Height; Name", s)
-    If ns = vbNullString Then Exit Sub 'Cancel
-    gps.Parse ns
-    LBFamousPlaces.List(LBFamousPlaces.ListIndex) = gps.ToStr
 End Sub
 
 Private Sub mnuAddToTrip_Click()

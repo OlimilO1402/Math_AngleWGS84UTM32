@@ -13,11 +13,11 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private m_Name   As String
-Private m_Lat    As Angle
-Private m_Lon    As Angle
+Private m_Lat    As AngleDec
+Private m_Lon    As AngleDec
 Private m_Height As Double
 
-Friend Sub New_(Latitude As Angle, Longitude As Angle, Optional ByVal Height As Double, Optional ByVal aName As String)
+Friend Sub New_(Latitude As AngleDec, Longitude As AngleDec, Optional ByVal Height As Double, Optional ByVal aName As String)
     Set m_Lat = Latitude: Set m_Lon = Longitude: m_Height = Height: m_Name = aName
 End Sub
 
@@ -30,10 +30,10 @@ Friend Function Clone() As GeoPos
     Set Clone = New GeoPos: Clone.NewC Me
 End Function
 
-Public Property Get Latitude() As Angle
+Public Property Get Latitude() As AngleDec
     Set Latitude = m_Lat
 End Property
-Public Property Get Longitude() As Angle
+Public Property Get Longitude() As AngleDec
     Set Longitude = m_Lon
 End Property
 
@@ -55,8 +55,8 @@ Public Sub Parse(s As String)
     Dim sa() As String: sa = Split(s, "; ")
     Dim u As Long: u = UBound(sa)
     Dim i As Long
-    If i <= u Then Set m_Lat = MNew.AngleS(sa(i)): i = i + 1
-    If i <= u Then Set m_Lon = MNew.AngleS(sa(i)): i = i + 1
+    If i <= u Then Set m_Lat = MNew.AngleDecS(sa(i)): i = i + 1
+    If i <= u Then Set m_Lon = MNew.AngleDecS(sa(i)): i = i + 1
     If i <= u Then m_Height = CDbl(sa(i)): i = i + 1
     If i <= u Then m_Name = sa(i): i = i + 1
     If m_Lat.Value < 0 Then m_Lat.Dir = "S" Else m_Lat.Dir = "N"
@@ -97,14 +97,14 @@ Private Function HaverSineDistance(p1 As GeoPos, p2 As GeoPos) As Double
     'Dim sq As Double: sq = Math.Sqr(a)
     'Dim mn As Double: mn = minD(1#, Math.Sqr(a))
     Dim c  As Double: c = 2 * m_Lat.ArcusSinusF(minD(1#, Math.Sqr(a)))
-    Dim R  As Double: 'R = 6371008.767 'earth radius in m
+    Dim r  As Double: 'R = 6371008.767 'earth radius in m
                       'R = 6378137#
                       'R = 6356752.3142
                       'R = 6367444.66 / 0.9996
-                      R = 6369993
+                      r = 6369993
                       'R = 6373000
                       'R = 6369900 * 0.9996
-    HaverSineDistance = R * c
+    HaverSineDistance = r * c
 End Function
 
 'Private Function HaverSineDistance(p1 As GeoPos, p2 As GeoPos) As Double
@@ -142,8 +142,8 @@ End Function
 '    HaverSineDistance = R * c
 'End Function
 
-Private Function minD(v1 As Double, v2 As Double) As Double
-    If v1 < v2 Then minD = v1 Else minD = v2
+Private Function minD(V1 As Double, V2 As Double) As Double
+    If V1 < V2 Then minD = V1 Else minD = V2
 End Function
 
 Friend Function ToUTM32(elli As Ellipsoid) As UTM32
@@ -154,13 +154,13 @@ Friend Function ToStr() As String
     'Dim sfm As String: sfm = "0.000"
     'ToString = "{lat:" & Format(m_Lat.Value, sfm) & "; lon: " & Format(m_Lon.Value, sfm) & "}"
     'ToStr = "{lat:" & m_Lat.ToStr_GMS & "; lon: " & m_Lon.ToStr_GMS & "}"
-    ToStr = m_Lat.ToStr_GMS & "; " & m_Lon.ToStr_GMS & "; " & m_Height & "; " & m_Name
+    ToStr = m_Lat.ToStr_DMS & "; " & m_Lon.ToStr_DMS & "; " & m_Height & "; " & m_Name
 End Function
 
-Private Function GetStr(ByVal v As Double) As String
+Private Function GetStr(ByVal V As Double) As String
     'Converts a Double to String by using the function Str for ensuring "." as a decimalseparator
     'we could also use CDbl and eventually replace comma (",") with period (".")
-    GetStr = Trim(Str(v))
+    GetStr = Trim(Str(V))
     Dim c As Integer: c = AscW(Left(GetStr, 1))
     Select Case c
     'Asc("0") = 48; Asc("9") = 57;
