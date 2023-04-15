@@ -7,13 +7,15 @@
 ![GitHub followers](https://img.shields.io/github/followers/OlimilO1402?style=social)
 
 Project started in march 2022.  
-The Angle class parses an angle for different purposes e.g. in grad-minute-second view. Angle has all trigonometric functions.  
-For proofing correctness of all calculations, all trigonometric functions will be drawn in a graph.  
-The GeoPos class is for gps geo-positioning-system purposes and uses the angle class for latitude and longitude.  
-For showing the correct functionality the small test app sends a kml file to google earth or a link to Koordinaten-umrechner.de  
-The GeoPos class calculates the distance between two or more geo-positions by using the Haversine-formula.   
-For proofing the correctness of the calculation create a Trip and look up the value in google-earth pro.  
-For compatibility and authoritative purposes the UTM-class creates UTM32-coordinates from WGS84 coordinates and vice versa.   
+The Angle class stores an angle in radians internally, and can be used in all situations where you need an angle e.g. gps. 
+With 5 different constructor-functions you can create an angle object with either a value in 
+radians, degrees, gons, in 3 separate values for degree, minute, second or in a string. 
+The Angle class has all trigonometric functions, you can view all functions graphically.  
+The GeoPos class is for gps geo-positioning-system purposes and uses the angle class for the values of latitude and longitude.  
+With the app you can send a kml file to google earth pro or a link to the website Koordinaten-umrechner.de 
+The GeoPos class calculates the distances between two or more geo-positions by using the Haversine-formula. 
+You may check the calculation by creating a Trip, send the trip to Google-Earth pro and look up the value. 
+For compatibility and authoritative purposes the UTM-class creates UTM32-coordinates from WGS84 coordinates and vice versa.  
    
 ![FMainShowDlgAngle Image](Resources/FMainShowDlgAngle.png "FMainShowDlgAngle Image")
 ![DlgTestAngle Image](Resources/DlgTestAngle.png "DlgTestAngle Image")
