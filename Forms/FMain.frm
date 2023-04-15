@@ -581,6 +581,6 @@ Private Sub mnuOptFolderOpen_Click()
 End Sub
 
 Private Sub mnuOptShowAngles_Click()
-    FTestAngle.Show
+    FTestAngle.Show vbModal, Me
 End Sub
 

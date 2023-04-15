@@ -27,7 +27,7 @@ End Sub
 Friend Sub NewG_(angleInGon As Double)
     m_Angle = angleInGon * MMath.Pi / 200#
 End Sub
-Friend Sub NewDMS_(aDeg As Long, aMin As Double, aSec As Double)
+Friend Sub NewDMS_(ByVal aDeg As Long, ByVal aMin As Double, ByVal aSec As Double)
     m_Angle = (aDeg + aMin / 60# + aSec / 3600#) * MMath.Pi / 180#
 End Sub
 'copy to MNew:
@@ -229,6 +229,12 @@ Public Property Get GradF() As Double
     Dim eps As Double: eps = Abs(Abs(GradF) - Abs(rgf))
     If eps <= 0.0000000001 Then GradF = rgf
 End Property
+'Public Property Let GradF(ByVal Value)
+'    Dim gd ', md, sd
+'    SeparateDMS m_Angle, gd, , md, , sd
+'    NewDMS_ Value, gd, sd
+'End Property
+
 Public Property Get Grad() As Long
     SeparateDMS m_Angle, , Grad
     Grad = Sgn(m_Angle) * Grad
@@ -237,12 +243,23 @@ Public Property Get Grad() As Long
     'Dim eps As Double: eps = Abs(gf - rgf)
     'If eps < 0.00000001 Then Grad = Sgn(m_angle) * rgf Else Grad = Sgn(m_angle) * CDbl(Int(gf))
 End Property
+Public Property Let Grad(ByVal Value As Long)
+    Dim gi As Long, mi As Long, sd As Double
+    SeparateDMS m_Angle, , gi, , mi, sd
+    NewDMS_ Value, mi, sd
+End Property
 
 Public Property Get MinuteF() As Double
     SeparateDMS m_Angle, , , MinuteF
     MinuteF = Sgn(m_Angle) * MinuteF
     'MinuteF = (Abs(GradF) - Abs(Grad)) * 60#
 End Property
+'Public Property Let MinuteF(ByVal Value)
+'    Dim gi As Long, md ', sd
+'    SeparateDMS m_Angle, , gi, md, , sd
+'    NewDMS_ gi, Value, sd
+'End Property
+
 Public Property Get Minute() As Long
     SeparateDMS m_Angle, , , , Minute
     Minute = Sgn(m_Angle) * Minute
@@ -251,12 +268,23 @@ Public Property Get Minute() As Long
     'Dim eps As Double: eps = Abs(mf - rmf)
     'If eps < 0.00000001 Then Minute = Sgn(m_angle) * rmf Else Minute = Sgn(m_angle) * CDbl(Int(mf))
 End Property
+Public Property Let Minute(ByVal Value As Long)
+    Dim gi As Long, mi As Long, sd As Double
+    SeparateDMS m_Angle, , gi, , mi, sd
+    NewDMS_ gi, Value, sd
+End Property
 
 Public Property Get SecondF() As Double
     'SecondF = (MinuteF - Minute) * 60#
     SeparateDMS m_Angle, , , , , SecondF
     SecondF = Sgn(m_Angle) * SecondF
 End Property
+Public Property Let SecondF(ByVal Value As Double)
+    Dim gi As Long, mi As Long, sd As Double
+    SeparateDMS m_Angle, , gi, , mi, sd
+    NewDMS_ gi, mi, Value
+End Property
+
 Public Property Get Second() As Long
     SeparateDMS m_Angle, , , , , , Second
     Second = Sgn(m_Angle) * Second
@@ -265,16 +293,32 @@ Public Property Get Second() As Long
     'Dim eps As Double: eps = Abs(sf - rsf)
     'If eps < 0.00000001 Then Second = rsf Else Second = CDbl(Int(sf))
 End Property
+Public Property Let Second(ByVal Value As Long)
+    Dim gi As Long, mi As Long, si As Long, msd As Double
+    SeparateDMS m_Angle, , gi, , mi, , si, msd
+    NewDMS_ gi, mi, CDec(Value) + CDec(msd) / CDec(1000)
+End Property
 
 Public Property Get MillisecF() As Double
     SeparateDMS m_Angle, , , , , , , MillisecF
     MillisecF = Sgn(m_Angle) * MillisecF
     'MillisecF = (SecondF - Second) * 1000#
 End Property
+Public Property Let MillisecF(ByVal Value As Double)
+    Dim gi As Long, mi As Long, si As Long
+    SeparateDMS m_Angle, , gi, , mi, , si
+    NewDMS_ gi, mi, CDec(CDec(si) + CDec(Value) / CDec(1000))
+End Property
+
 Public Property Get Millisec() As Long
     'Millisec = Int(MillisecF)
     SeparateDMS m_Angle, , , , , , , , Millisec
     Millisec = Sgn(m_Angle) * Millisec
+End Property
+Public Property Let Millisec(ByVal Value As Long)
+    Dim gi As Long, mi As Long, si As Long
+    SeparateDMS m_Angle, , gi, , mi, , si
+    NewDMS_ gi, mi, CDec(CDec(si) + CDec(Value) / CDec(1000))
 End Property
 
 Private Sub SeparateDMS(ByVal angleRad_in As Double, Optional gd_out As Double, Optional gi_out As Long, _
@@ -346,26 +390,26 @@ Public Function Cotangens() As Double        ' aka cot
 End Function
 
 ' ############################## '    trigonometric inverse funktions    ' ############################## '
-Public Function ArcusSinusF(ByVal Y As Double) As Double     ' aka arcsin
-    Select Case Y
+Public Function ArcusSinusF(ByVal y As Double) As Double     ' aka arcsin
+    Select Case y
     Case 1
         ArcusSinusF = 0.5 * MMath.Pi
     Case -1
         ArcusSinusF = -0.5 * MMath.Pi
     Case -1 To 1
-        ArcusSinusF = VBA.Math.Atn(Y / Sqr(1 - Y * Y))
+        ArcusSinusF = VBA.Math.Atn(y / Sqr(1 - y * y))
     End Select
 End Function
-Public Function ArcusSinus(ByVal Y As Double) As Angle       ' aka arcsin
-    Set ArcusSinus = New Angle: ArcusSinus.New_ ArcusSinusF(Y)
+Public Function ArcusSinus(ByVal y As Double) As Angle       ' aka arcsin
+    Set ArcusSinus = New Angle: ArcusSinus.New_ ArcusSinusF(y)
 End Function
 
-Public Function ArcusCosinusF(ByVal X As Double) As Double   ' aka arccos
-    If X < -1 Or 1 < X Then Exit Function
-    ArcusCosinusF = 0.5 * MMath.Pi - ArcusSinusF(X)
+Public Function ArcusCosinusF(ByVal x As Double) As Double   ' aka arccos
+    If x < -1 Or 1 < x Then Exit Function
+    ArcusCosinusF = 0.5 * MMath.Pi - ArcusSinusF(x)
 End Function
-Public Function ArcusCosinus(ByVal X As Double) As Angle     ' aka arccos
-    Set ArcusCosinus = New Angle: ArcusCosinus.New_ ArcusCosinusF(X)
+Public Function ArcusCosinus(ByVal x As Double) As Angle     ' aka arccos
+    Set ArcusCosinus = New Angle: ArcusCosinus.New_ ArcusCosinusF(x)
 End Function
 
 Public Function ArcusTangensF(ByVal T As Double) As Double   ' aka arctan
@@ -376,53 +420,53 @@ Public Function ArcusTangens(ByVal T As Double) As Angle     ' aka arctan
 End Function
 
 'ArcusTangensXY: also known as ATan2
-Public Function ArcusTangensXYF(ByVal X As Double, _
-                                ByVal Y As Double) As Double ' aka atan2
-    If Y > 0 Then
-        If X > 0 Then       ' 1. Quadrant
-            ArcusTangensXYF = Atn(Abs(Y) / Abs(X)) '+ MMath.Pi * 0#
-        ElseIf X < 0 Then   ' 2. Quadrant
-            ArcusTangensXYF = -Atn(Abs(Y) / Abs(X)) + MMath.Pi '* 1#
+Public Function ArcusTangensXYF(ByVal x As Double, _
+                                ByVal y As Double) As Double ' aka atan2
+    If y > 0 Then
+        If x > 0 Then       ' 1. Quadrant
+            ArcusTangensXYF = Atn(Abs(y) / Abs(x)) '+ MMath.Pi * 0#
+        ElseIf x < 0 Then   ' 2. Quadrant
+            ArcusTangensXYF = -Atn(Abs(y) / Abs(x)) + MMath.Pi '* 1#
         Else 'If x = 0 Then ' pos. Y-Achse
             ArcusTangensXYF = 0.5 * MMath.Pi
         End If
-    ElseIf Y < 0 Then
-        If X < 0 Then       ' 3. Quadrant
-            ArcusTangensXYF = Atn(Abs(Y) / Abs(X)) + MMath.Pi '* 1#
-        ElseIf X > 0 Then   ' 4. Quadrant
-            ArcusTangensXYF = -Atn(Abs(Y) / Abs(X)) + MMath.Pi * 2
+    ElseIf y < 0 Then
+        If x < 0 Then       ' 3. Quadrant
+            ArcusTangensXYF = Atn(Abs(y) / Abs(x)) + MMath.Pi '* 1#
+        ElseIf x > 0 Then   ' 4. Quadrant
+            ArcusTangensXYF = -Atn(Abs(y) / Abs(x)) + MMath.Pi * 2
         Else 'If x = 0 Then ' neg. Y-Achse
             ArcusTangensXYF = 1.5 * MMath.Pi
         End If
     Else 'If y = 0 Then
-        If X > 0 Then       ' pos. X-Achse
+        If x > 0 Then       ' pos. X-Achse
             ArcusTangensXYF = 0
-        ElseIf X < 0 Then   ' neg. X-Achse
+        ElseIf x < 0 Then   ' neg. X-Achse
             ArcusTangensXYF = MMath.Pi
         Else 'If x = 0 Then ' Nullpunkt
             ArcusTangensXYF = 0
         End If
     End If
 End Function
-Public Function ArcusTangensXY(ByVal X As Double, _
-                               ByVal Y As Double) As Angle   ' aka atan2
-    Set ArcusTangensXY = New Angle: ArcusTangensXY.New_ ArcusTangensXYF(X, Y)
+Public Function ArcusTangensXY(ByVal x As Double, _
+                               ByVal y As Double) As Angle   ' aka atan2
+    Set ArcusTangensXY = New Angle: ArcusTangensXY.New_ ArcusTangensXYF(x, y)
 End Function
 
-Public Function ArcusCosecansF(ByVal Y As Double) As Double  ' aka arccsc
-    If Y = 0 Then Exit Function
-    ArcusCosecansF = ArcusSinusF(1 / Y)
+Public Function ArcusCosecansF(ByVal y As Double) As Double  ' aka arccsc
+    If y = 0 Then Exit Function
+    ArcusCosecansF = ArcusSinusF(1 / y)
 End Function
-Public Function ArcusCosecans(ByVal Y As Double) As Angle    ' aka arccsc
-    Set ArcusCosecans = New Angle: ArcusCosecans.New_ ArcusCosecansF(Y)
+Public Function ArcusCosecans(ByVal y As Double) As Angle    ' aka arccsc
+    Set ArcusCosecans = New Angle: ArcusCosecans.New_ ArcusCosecansF(y)
 End Function
 
-Public Function ArcusSecansF(ByVal X As Double) As Double    ' aka arcsec
-    If X = 0 Then Exit Function
-    ArcusSecansF = ArcusCosinusF(1 / X)
+Public Function ArcusSecansF(ByVal x As Double) As Double    ' aka arcsec
+    If x = 0 Then Exit Function
+    ArcusSecansF = ArcusCosinusF(1 / x)
 End Function
-Public Function ArcusSecans(ByVal X As Double) As Angle      ' aka arcsec
-    Set ArcusSecans = New Angle: ArcusSecans.New_ ArcusSecansF(X)
+Public Function ArcusSecans(ByVal x As Double) As Angle      ' aka arcsec
+    Set ArcusSecans = New Angle: ArcusSecans.New_ ArcusSecansF(x)
 End Function
 
 Public Function ArcusCotangensF(ByVal T As Double) As Double ' aka arccot
@@ -456,19 +500,19 @@ Public Function CotangensHyperbolicus() As Double            ' aka coth
 End Function
 
 ' ###################### '    hyperbolic inverse funktions    ' ###################### '
-Public Function AreaSinusHyperbolicusF(ByVal Y As Double) As Double     ' aka arsinh
-    AreaSinusHyperbolicusF = VBA.Math.Log(Y + Sqr(Y * Y + 1))
+Public Function AreaSinusHyperbolicusF(ByVal y As Double) As Double     ' aka arsinh
+    AreaSinusHyperbolicusF = VBA.Math.Log(y + Sqr(y * y + 1))
 End Function
-Public Function AreaSinusHyperbolicus(ByVal Y As Double) As Angle       ' aka arsinh
-    Set AreaSinusHyperbolicus = New Angle: AreaSinusHyperbolicus.New_ AreaSinusHyperbolicusF(Y)
+Public Function AreaSinusHyperbolicus(ByVal y As Double) As Angle       ' aka arsinh
+    Set AreaSinusHyperbolicus = New Angle: AreaSinusHyperbolicus.New_ AreaSinusHyperbolicusF(y)
 End Function
 
-Public Function AreaCosinusHyperbolicusF(ByVal X As Double) As Double   ' aka arcosh
-    If X < 1 Then Exit Function
-    AreaCosinusHyperbolicusF = VBA.Math.Log(X + Sqr(X * X - 1))
+Public Function AreaCosinusHyperbolicusF(ByVal x As Double) As Double   ' aka arcosh
+    If x < 1 Then Exit Function
+    AreaCosinusHyperbolicusF = VBA.Math.Log(x + Sqr(x * x - 1))
 End Function
-Public Function AreaCosinusHyperbolicus(ByVal X As Double) As Angle     ' aka arcosh
-    Set AreaCosinusHyperbolicus = New Angle: AreaCosinusHyperbolicus.New_ AreaCosinusHyperbolicusF(X)
+Public Function AreaCosinusHyperbolicus(ByVal x As Double) As Angle     ' aka arcosh
+    Set AreaCosinusHyperbolicus = New Angle: AreaCosinusHyperbolicus.New_ AreaCosinusHyperbolicusF(x)
 End Function
 
 Public Function AreaTangensHyperbolicusF(ByVal T As Double) As Double   ' aka artanh
@@ -479,26 +523,26 @@ Public Function AreaTangensHyperbolicus(ByVal T As Double) As Angle     ' aka ar
     Set AreaTangensHyperbolicus = New Angle: AreaTangensHyperbolicus.New_ AreaTangensHyperbolicusF(T)
 End Function
 
-Public Function AreaCosecansHyperbolicusF(ByVal X As Double) As Double  ' aka arcsch
-    If X = 0 Then Exit Function
-    AreaCosecansHyperbolicusF = VBA.Math.Log((Sgn(X) * Sqr(X * X + 1) + 1) / X)
+Public Function AreaCosecansHyperbolicusF(ByVal x As Double) As Double  ' aka arcsch
+    If x = 0 Then Exit Function
+    AreaCosecansHyperbolicusF = VBA.Math.Log((Sgn(x) * Sqr(x * x + 1) + 1) / x)
 End Function
-Public Function AreaCosecansHyperbolicus(ByVal X As Double) As Angle    ' aka arcsch
-    Set AreaCosecansHyperbolicus = New Angle: AreaCosecansHyperbolicus.New_ AreaCosecansHyperbolicusF(X)
-End Function
-
-Public Function AreaSecansHyperbolicusF(ByVal X As Double) As Double    ' aka arsech
-    If X <= 0 Or 1 <= X Then Exit Function
-    AreaSecansHyperbolicusF = VBA.Math.Log((Sqr(-X * X + 1) + 1) / X)
-End Function
-Public Function AreaSecansHyperbolicus(ByVal X As Double) As Angle      ' aka arsech
-    Set AreaSecansHyperbolicus = New Angle: AreaSecansHyperbolicus.New_ AreaSecansHyperbolicusF(X)
+Public Function AreaCosecansHyperbolicus(ByVal x As Double) As Angle    ' aka arcsch
+    Set AreaCosecansHyperbolicus = New Angle: AreaCosecansHyperbolicus.New_ AreaCosecansHyperbolicusF(x)
 End Function
 
-Public Function AreaCotangensHyperbolicusF(ByVal X As Double) As Double ' aka arcoth
-    If X < -1 Or 1 < X Then AreaCotangensHyperbolicusF = VBA.Math.Log((X + 1) / (X - 1)) / 2
+Public Function AreaSecansHyperbolicusF(ByVal x As Double) As Double    ' aka arsech
+    If x <= 0 Or 1 <= x Then Exit Function
+    AreaSecansHyperbolicusF = VBA.Math.Log((Sqr(-x * x + 1) + 1) / x)
 End Function
-Public Function AreaCotangensHyperbolicus(ByVal X As Double) As Angle   ' aka arcoth
-    Set AreaCotangensHyperbolicus = New Angle: AreaCotangensHyperbolicus.New_ AreaCotangensHyperbolicusF(X)
+Public Function AreaSecansHyperbolicus(ByVal x As Double) As Angle      ' aka arsech
+    Set AreaSecansHyperbolicus = New Angle: AreaSecansHyperbolicus.New_ AreaSecansHyperbolicusF(x)
+End Function
+
+Public Function AreaCotangensHyperbolicusF(ByVal x As Double) As Double ' aka arcoth
+    If x < -1 Or 1 < x Then AreaCotangensHyperbolicusF = VBA.Math.Log((x + 1) / (x - 1)) / 2
+End Function
+Public Function AreaCotangensHyperbolicus(ByVal x As Double) As Angle   ' aka arcoth
+    Set AreaCotangensHyperbolicus = New Angle: AreaCotangensHyperbolicus.New_ AreaCotangensHyperbolicusF(x)
 End Function
 

@@ -14,7 +14,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements Angle
 Private m_Dir   As String  'N, S, E/O, W
-Private m_Angle As Variant 'stores the angle in radians (im Bogenmass) als Decimal
+Private m_Angle As Variant 'stores the angle in radians (im Bogenmass) as Decimal
 'if m_angle is positive it is either North or East
 'if m_angle is negative it is eigher South oder West
 'http://www.gpsy.com/gpsinfo/geotoutm/gantz/LatLong-UTMconversion.cpp.txt
@@ -341,6 +341,10 @@ Public Function Add(a As Angle) As AngleDec
     Set Add = MNew.AngleDec(m_Angle + CDec(a.Value))
 End Function
 
+Public Sub AddDeg(ByVal d)
+    m_Angle = m_Angle + d * MMath.Pi / 180#
+End Sub
+
 Public Function Subt(a As Angle) As AngleDec
     Set Subt = MNew.AngleDec(m_Angle - CDec(a.Value))
 End Function
@@ -397,6 +401,7 @@ Public Function ArcusSinus(ByVal y) As AngleDec         ' aka arcsin
 End Function
 
 Public Function ArcusCosinusF(ByVal x)       ' aka arccos
+    If x < -1 Or 1 < x Then Exit Function
     ArcusCosinusF = 0.5 * MMath.Pi - ArcusSinusF(CDec(x))
 End Function
 Public Function ArcusCosinus(ByVal x) As AngleDec       ' aka arccos
@@ -445,6 +450,7 @@ Public Function ArcusTangensXY(ByVal x, _
 End Function
 
 Public Function ArcusCosecansF(ByVal y)    ' aka arccsc
+    If y = 0 Then Exit Function
     ArcusCosecansF = ArcusSinusF(1 / y)
 End Function
 Public Function ArcusCosecans(ByVal y) As AngleDec     ' aka arccsc
@@ -452,6 +458,7 @@ Public Function ArcusCosecans(ByVal y) As AngleDec     ' aka arccsc
 End Function
 
 Public Function ArcusSecansF(ByVal x)     ' aka arcsec
+    If x = 0 Then Exit Function
     ArcusSecansF = ArcusCosinusF(1 / x)
 End Function
 Public Function ArcusSecans(ByVal x) As AngleDec       ' aka arcsec
@@ -497,6 +504,7 @@ Public Function AreaSinusHyperbolicus(ByVal y) As AngleDec        ' aka arsinh
 End Function
 
 Public Function AreaCosinusHyperbolicusF(ByVal x)   ' aka arcosh
+    If x < 1 Then Exit Function
     AreaCosinusHyperbolicusF = CDec(VBA.Math.Log(CDec(x) + CDec(Sqr(CDec(x) * CDec(x) - CDec(1)))))
 End Function
 Public Function AreaCosinusHyperbolicus(ByVal x) As AngleDec      ' aka arcosh
@@ -504,6 +512,7 @@ Public Function AreaCosinusHyperbolicus(ByVal x) As AngleDec      ' aka arcosh
 End Function
 
 Public Function AreaTangensHyperbolicusF(ByVal T)   ' aka artanh
+    If T < -1 Or 1 < T Then Exit Function
     AreaTangensHyperbolicusF = VBA.Math.Log((1 + T) / (1 - T)) / 2
 End Function
 Public Function AreaTangensHyperbolicus(ByVal T) As AngleDec      ' aka artanh
@@ -511,6 +520,7 @@ Public Function AreaTangensHyperbolicus(ByVal T) As AngleDec      ' aka artanh
 End Function
 
 Public Function AreaCosecansHyperbolicusF(ByVal x)   ' aka arcsch
+    If x = 0 Then Exit Function
     AreaCosecansHyperbolicusF = CDec(VBA.Math.Log((CDec(Sgn(CDec(x))) * CDec(Sqr(CDec(x) * CDec(x) + CDec(1))) + CDec(1)) / CDec(x)))
 End Function
 Public Function AreaCosecansHyperbolicus(ByVal x) As AngleDec     ' aka arcsch
@@ -518,6 +528,7 @@ Public Function AreaCosecansHyperbolicus(ByVal x) As AngleDec     ' aka arcsch
 End Function
 
 Public Function AreaSecansHyperbolicusF(ByVal x)      ' aka arsech
+    If x <= 0 Or 1 <= x Then Exit Function
     AreaSecansHyperbolicusF = CDec(VBA.Math.Log((CDec(Sqr(CDec(-x) * CDec(x) + CDec(1))) + CDec(1)) / CDec(x)))
 End Function
 Public Function AreaSecansHyperbolicus(ByVal x) As AngleDec       ' aka arsech
@@ -525,7 +536,7 @@ Public Function AreaSecansHyperbolicus(ByVal x) As AngleDec       ' aka arsech
 End Function
 
 Public Function AreaCotangensHyperbolicusF(ByVal x)   ' aka arcoth
-    AreaCotangensHyperbolicusF = CDec(VBA.Math.Log((CDec(x) + CDec(1)) / (CDec(x) - CDec(1))) / CDec(2))
+    If x < -1 Or 1 < x Then AreaCotangensHyperbolicusF = CDec(VBA.Math.Log((CDec(x) + CDec(1)) / (CDec(x) - CDec(1))) / CDec(2))
 End Function
 Public Function AreaCotangensHyperbolicus(ByVal x) As AngleDec    ' aka arcoth
     Set AreaCotangensHyperbolicus = New AngleDec: AreaCotangensHyperbolicus.New_ AreaCotangensHyperbolicusF(CDec(x))
@@ -686,6 +697,10 @@ Private Function Angle_Div(ByVal Value As Double) As Angle
     Set Angle_Div = Me.Div(CDec(Value))
 End Function
 
+Private Property Let Angle_Grad(ByVal RHS As Long)
+    Me.Grad = RHS
+End Property
+
 Private Property Get Angle_Grad() As Long
     Angle_Grad = Me.Grad
 End Property
@@ -694,12 +709,24 @@ Private Property Get Angle_GradF() As Double
     Angle_GradF = Me.GradF
 End Property
 
+Private Property Let Angle_Millisec(ByVal RHS As Long)
+    Me.Millisec = RHS
+End Property
+
 Private Property Get Angle_Millisec() As Long
     Angle_Millisec = Me.Millisec
 End Property
 
+Private Property Let Angle_MillisecF(ByVal RHS As Double)
+    Me.MillisecF = RHS
+End Property
+
 Private Property Get Angle_MillisecF() As Double
     Angle_MillisecF = Me.MillisecF
+End Property
+
+Private Property Let Angle_Minute(ByVal RHS As Long)
+    Me.Minute = RHS
 End Property
 
 Private Property Get Angle_Minute() As Long
@@ -726,8 +753,16 @@ Private Function Angle_SecansHyperbolicus() As Double
     Angle_SecansHyperbolicus = Me.SecansHyperbolicus
 End Function
 
+Private Property Let Angle_Second(ByVal RHS As Long)
+    Me.Second = RHS
+End Property
+
 Private Property Get Angle_Second() As Long
     Angle_Second = Me.Second
+End Property
+
+Private Property Let Angle_SecondF(ByVal RHS As Double)
+    Me.SecondF = RHS
 End Property
 
 Private Property Get Angle_SecondF() As Double
