@@ -128,6 +128,21 @@ Begin VB.Form FMain
       Begin VB.Menu mnuGeoPosDelete 
          Caption         =   "Delete Item"
       End
+      Begin VB.Menu mnuGeoPosSep1 
+         Caption         =   "-"
+      End
+      Begin VB.Menu mnuGeoPosCut 
+         Caption         =   "Cut"
+         Shortcut        =   ^X
+      End
+      Begin VB.Menu mnuGeoPosCopy 
+         Caption         =   "Copy"
+         Shortcut        =   ^C
+      End
+      Begin VB.Menu mnuGeoPosPaste 
+         Caption         =   "Paste"
+         Shortcut        =   ^V
+      End
    End
    Begin VB.Menu mnuPopTrip 
       Caption         =   "mnuPopTrip"
@@ -243,6 +258,28 @@ Private Sub AddPlaces()
         .Add MNew.GeoPos(MNew.AngleDecS("N 51° 16' 22,54"""), MNew.AngleDecS("O 15° 02' 30,91"""), 163, "Deutschland, östlichster Punkt")
         .Add MNew.GeoPos(MNew.AngleDecS("N 55° 03' 30,95"""), MNew.AngleDecS("O 08° 25' 03,98"""), 0, "Deutschland, nördlichster Punkt")
         .Add MNew.GeoPos(MNew.AngleDecS("N 47° 16' 12,40"""), MNew.AngleDecS("O 10° 10' 42,04"""), 0, "Deutschland, südlichster Punkt")
+        
+        .Add MNew.GeoPos(MNew.AngleDecS("N 31° 19' 28,34''"), MNew.AngleDecS("O 120° 42' 43,40''"), 0, "China Suzhou Suzhou Supertower, H=450m, 98etag.  y(dFst)=2019 ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 32°  3' 46,17''"), MNew.AngleDecS("O 118° 46' 42,83''"), 0, "China Nanjing Zifeng Tower, H=450m, 89etag.  y(dFst)=2010 ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N  3°  9' 29,04''"), MNew.AngleDecS("O 101° 42' 43,41''"), 0, "Malaysien Kuala Lumpur Petronas Towers, H=452m, y(dFst)=2004 Zwillingstürme auf 172m durch Skybridge verbunden")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 28° 11' 42,84''"), MNew.AngleDecS("O 112° 58' 26,00''"), 0, "China Changsa Changsa IFS Tower, H=452m, 94etag. ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 10° 46' 17,45''"), MNew.AngleDecS("O 106° 42' 15,85''"), 0, "Vietnam Ho-Chi-Minh-Stadt (=Saigon) Landmark 81 (Bitexco financial Tower), H=461,2m, 81etag. ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 59° 59' 12,47''"), MNew.AngleDecS("O  30° 10' 38,99''"), 0, "Russland Sankt Petersburg Lakhta Center, H=462m, Höchstes Gebäude Europas, Hauptquartier Gazprom")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 40° 45' 59,36''"), MNew.AngleDecS("W  73° 58' 50,39''"), 0, "USA New York Central Park Tower, H=472m, 98etag.  y(dFst)=2020 ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 22° 18' 12,56''"), MNew.AngleDecS("O 114°  9' 37,18''"), 0, "China Hongkong International Commerce Center, H=484m, 108etag.  y(dFst)=2010 ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 31° 14'  7,62''"), MNew.AngleDecS("O 121° 30'  4,94''"), 0, "China Shanghai Shanghai World Financial Center, H=492m, 101etag.  y(dFst)=2008 ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 25°  1' 59,94''"), MNew.AngleDecS("O 121° 33' 54,34''"), 0, "Taiwan Taipeh Taipei 101, H=508m, 101etag.  y(dFst)=2007 ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 39° 54' 41,28''"), MNew.AngleDecS("O 116° 27' 38,81''"), 0, "China Peking CITIC Tower Zhongguo Zun, H=528m, 108etag.  y(dFst)=2018 steht immer noch leer")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 39°  7' 43,98''"), MNew.AngleDecS("O 117° 11' 49,06''"), 0, "China Tianjin Tianjin CTF Finance Centre, H=530m, 97etag.  y(dFst)=2019 ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 23°  6' 29,84''"), MNew.AngleDecS("O 113° 19' 11,10''"), 0, "China Guangzhou Chow Tai Fook Centre, H=530m, 111etag.  y(dFst)=2016 ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 40° 42' 45,88''"), MNew.AngleDecS("W  74°  0' 48,17''"), 0, "USA New York One World Trade Centre, H=541,3m, 105etag.  y(dFst)=2014 steht am Ort des ehem WTC das 2001 zerstört wurde")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 37° 30' 45,21''"), MNew.AngleDecS("O 127°  6'  9,13''"), 0, "Südkorea Seoul Lotte World Tower, H=555m, 123etag. ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 22° 32' 11,26''"), MNew.AngleDecS("O 114°  3'  1,80''"), 0, "China Shenzhen Ping an International Finance Center, H=599m, 115etag.  y(dFst)=2017 ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 21° 25'  7,09''"), MNew.AngleDecS("O  39° 49' 34,27''"), 0, "Saudi Arabien Mekka Makkah Royal Clock Tower, H=601m, 120etag.  y(dFst)=2011 Hochausgruppe Abraj Al Bait Größte Turmuhr der Welt (sieht aus wie bingben)")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 31° 14'  7,22''"), MNew.AngleDecS("O 121° 30'  6,88''"), 0, "China Shanghai Shanghai Tower, H=632m, 132etag. ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 30° 35'  9,51''"), MNew.AngleDecS("O 114° 19'  3,25''"), 0, "China Wuhan Wuhan Greenland Center, H=636m, 125etag.  y(dFst)=2019 ")
+        .Add MNew.GeoPos(MNew.AngleDecS("N  3°  8' 29,78''"), MNew.AngleDecS("O 101° 42'  4,03''"), 45, "Malaysien Kuala Lumpur Merdeka 118, H=678,9m, 118etag.  y(dFst)=(vorauss. End) 2023 Turmspitze symbol die ausgestreckte Hand des Premierministers Merdeka=Unabhängigkeit")
+        .Add MNew.GeoPos(MNew.AngleDecS("N 25° 11' 49,91''"), MNew.AngleDecS("O  55° 16' 27,76''"), 0, "Vereinigte Arabische Emirate Dubai Burj Khalifa, H=828m, 163etag.  y(dFst)=2010 ")
     End With
     UpdateView
 End Sub
@@ -267,6 +304,7 @@ End Sub
 
 Private Sub LBFamousPlaces_DblClick()
     mnuGeoPosEdit_Click
+    LBFamousPlaces_Click
 End Sub
 
 Private Sub LBFamousPlaces_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
@@ -378,6 +416,37 @@ Private Sub mnuGeoPosAdd_Click()
     If FGeoPos.ShowDialog(gps, Me) = vbCancel Then Exit Sub
     
     m_FamousPlaces.Add gps
+    UpdateView
+End Sub
+
+Private Sub mnuGeoPosCut_Click()
+    Dim i As Long: i = LBFamousPlaces.ListIndex + 1
+    If i = 0 Then Exit Sub
+    'Dim s As String: s = LBFamousPlaces.List(i)
+    Dim gps As GeoPos: Set gps = m_FamousPlaces.Item(i)  ' MNew.GeoPosS(s)
+    Clipboard.SetText gps.ToStrClipBoard
+    m_FamousPlaces.Remove i
+    UpdateView
+    'LBFamousPlaces.RemoveItem i
+End Sub
+
+Private Sub mnuGeoPosCopy_Click()
+    Dim i As Long: i = LBFamousPlaces.ListIndex + 1
+    If i = 0 Then Exit Sub
+    'Dim s As String: s = LBFamousPlaces.List(i)
+    Dim gps As GeoPos: Set gps = m_FamousPlaces.Item(i) ' MNew.GeoPosS(s)
+    Clipboard.SetText gps.ToStrClipBoard
+End Sub
+
+Private Sub mnuGeoPosPaste_Click()
+    Dim s As String: s = Clipboard.GetText
+    Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
+    Dim i As Long: i = LBFamousPlaces.ListIndex + 1
+    If i = 0 Then
+        m_FamousPlaces.Add gps
+    Else
+        m_FamousPlaces.Add gps, , i
+    End If
     UpdateView
 End Sub
 

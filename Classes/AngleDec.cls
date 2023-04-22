@@ -238,7 +238,7 @@ End Property
 
 Public Property Get Grad() As Long
     SeparateDMS m_Angle, , Grad
-    Grad = Sgn(m_Angle) * Grad
+    'Grad = Sgn(m_Angle) * Grad
     'Dim gf  As Double:  gf = Abs(GradF)
     'Dim rgf As Double: rgf = Round(gf)
     'Dim eps As Double: eps = Abs(gf - rgf)
@@ -252,7 +252,7 @@ End Property
 
 Public Property Get MinuteF()
     SeparateDMS m_Angle, , , MinuteF
-    MinuteF = Sgn(m_Angle) * MinuteF
+    'MinuteF = Sgn(m_Angle) * MinuteF
 End Property
 'Public Property Let MinuteF(ByVal Value)
 '    Dim gi As Long, md ', sd
@@ -262,7 +262,7 @@ End Property
 
 Public Property Get Minute() As Long
     SeparateDMS m_Angle, , , , Minute
-    Minute = Sgn(m_Angle) * Minute
+    'Minute = Sgn(m_Angle) * Minute
 End Property
 Public Property Let Minute(ByVal Value As Long)
     Dim gi As Long, mi As Long, sd
@@ -273,7 +273,7 @@ End Property
 Public Property Get SecondF()
     'SecondF = (MinuteF - Minute) * 60#
     SeparateDMS m_Angle, , , , , SecondF
-    SecondF = Sgn(m_Angle) * SecondF
+    'SecondF = Sgn(m_Angle) * SecondF
 End Property
 Public Property Let SecondF(ByVal Value)
     Dim gi As Long, mi As Long, sd
@@ -283,7 +283,7 @@ End Property
 
 Public Property Get Second() As Long
     SeparateDMS m_Angle, , , , , , Second
-    Second = Sgn(m_Angle) * Second
+    'Second = Sgn(m_Angle) * Second
     'Dim sf  As Double:  sf = SecondF
     'Dim rsf As Double: rsf = Round(sf)
     'Dim eps As Double: eps = Abs(sf - rsf)
@@ -297,7 +297,7 @@ End Property
 
 Public Property Get MillisecF()
     SeparateDMS m_Angle, , , , , , , MillisecF
-    MillisecF = Sgn(m_Angle) * MillisecF
+    'MillisecF = Sgn(m_Angle) * MillisecF
     'MillisecF = (SecondF - Second) * 1000#
 End Property
 Public Property Let MillisecF(ByVal Value)
@@ -309,7 +309,7 @@ End Property
 Public Property Get Millisec() As Long
     'Millisec = Int(MillisecF)
     SeparateDMS m_Angle, , , , , , , , Millisec
-    Millisec = Sgn(m_Angle) * Millisec
+    'Millisec = Sgn(m_Angle) * Millisec
 End Property
 Public Property Let Millisec(ByVal Value As Long)
     Dim gi As Long, mi As Long, si As Long

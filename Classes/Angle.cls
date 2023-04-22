@@ -76,7 +76,6 @@ Public Function Parse(s As String) As Boolean
         Select Case State
         Case 0
             If ac = 45 Then
-                'Oh Mist, so ist das Mist, der winkel kann ja nicht wissen ob er Latitude oder Longitude ist????
                 DirFakt = -1
             ElseIf 48 <= ac And ac <= 57 Then 'die Ziffern von Grad (degree)
                 deg = deg * 10# + ac - 48
@@ -237,7 +236,7 @@ End Property
 
 Public Property Get Grad() As Long
     SeparateDMS m_Angle, , Grad
-    Grad = Sgn(m_Angle) * Grad
+    'Grad = Sgn(m_Angle) * Grad
     'Dim gf  As Double:  gf = Abs(GradF)
     'Dim rgf As Double: rgf = Round(gf)
     'Dim eps As Double: eps = Abs(gf - rgf)
@@ -251,7 +250,7 @@ End Property
 
 Public Property Get MinuteF() As Double
     SeparateDMS m_Angle, , , MinuteF
-    MinuteF = Sgn(m_Angle) * MinuteF
+    'MinuteF = Sgn(m_Angle) * MinuteF
     'MinuteF = (Abs(GradF) - Abs(Grad)) * 60#
 End Property
 'Public Property Let MinuteF(ByVal Value)
@@ -262,7 +261,7 @@ End Property
 
 Public Property Get Minute() As Long
     SeparateDMS m_Angle, , , , Minute
-    Minute = Sgn(m_Angle) * Minute
+    'Minute = Sgn(m_Angle) * Minute
     'Dim mf  As Double:  mf = Abs(MinuteF)
     'Dim rmf As Double: rmf = Round(mf)
     'Dim eps As Double: eps = Abs(mf - rmf)
@@ -277,7 +276,7 @@ End Property
 Public Property Get SecondF() As Double
     'SecondF = (MinuteF - Minute) * 60#
     SeparateDMS m_Angle, , , , , SecondF
-    SecondF = Sgn(m_Angle) * SecondF
+    'SecondF = Sgn(m_Angle) * SecondF
 End Property
 Public Property Let SecondF(ByVal Value As Double)
     Dim gi As Long, mi As Long, sd As Double
@@ -287,7 +286,7 @@ End Property
 
 Public Property Get Second() As Long
     SeparateDMS m_Angle, , , , , , Second
-    Second = Sgn(m_Angle) * Second
+    'Second = Sgn(m_Angle) * Second
     'Dim sf  As Double:  sf = SecondF
     'Dim rsf As Double: rsf = Round(sf)
     'Dim eps As Double: eps = Abs(sf - rsf)
@@ -301,7 +300,7 @@ End Property
 
 Public Property Get MillisecF() As Double
     SeparateDMS m_Angle, , , , , , , MillisecF
-    MillisecF = Sgn(m_Angle) * MillisecF
+    'MillisecF = Sgn(m_Angle) * MillisecF
     'MillisecF = (SecondF - Second) * 1000#
 End Property
 Public Property Let MillisecF(ByVal Value As Double)
@@ -313,7 +312,7 @@ End Property
 Public Property Get Millisec() As Long
     'Millisec = Int(MillisecF)
     SeparateDMS m_Angle, , , , , , , , Millisec
-    Millisec = Sgn(m_Angle) * Millisec
+    'Millisec = Sgn(m_Angle) * Millisec
 End Property
 Public Property Let Millisec(ByVal Value As Long)
     Dim gi As Long, mi As Long, si As Long

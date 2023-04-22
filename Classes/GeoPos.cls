@@ -52,7 +52,7 @@ Public Property Get Name() As String
 End Property
 
 Public Sub Parse(s As String)
-    Dim sa() As String: sa = Split(s, "; ")
+    Dim sa() As String: sa = GetSA(s)
     Dim u As Long: u = UBound(sa)
     Dim i As Long
     If i <= u Then Set m_Lat = MNew.AngleDecS(sa(i)): i = i + 1
@@ -62,6 +62,14 @@ Public Sub Parse(s As String)
     If m_Lat.Value < 0 Then m_Lat.Dir = "S" Else m_Lat.Dir = "N"
     If m_Lon.Value < 0 Then m_Lon.Dir = "W" Else m_Lon.Dir = "E"
 End Sub
+
+Private Function GetSA(s As String) As String()
+    Dim sa1() As String: sa1 = Split(s, "; ")
+    Dim u1 As Long: u1 = UBound(sa1)
+    Dim sa2() As String: sa2 = Split(s, vbTab)
+    Dim u2 As Long: u2 = UBound(sa2)
+    If u2 > u1 Then GetSA = sa2 Else GetSA = sa1
+End Function
 
 Public Function HaverSineDistanceTo(other As GeoPos) As Double
    HaverSineDistanceTo = HaverSineDistance(Me, other)
@@ -157,10 +165,14 @@ Friend Function ToStr() As String
     ToStr = m_Lat.ToStr_DMS & "; " & m_Lon.ToStr_DMS & "; " & m_Height & "; " & m_Name
 End Function
 
-Private Function GetStr(ByVal V As Double) As String
+Public Function ToStrClipBoard() As String
+    ToStrClipBoard = m_Lat.ToStr_DMS & vbTab & m_Lon.ToStr_DMS & vbTab & m_Height & vbTab & m_Name
+End Function
+
+Private Function GetStr(ByVal v As Double) As String
     'Converts a Double to String by using the function Str for ensuring "." as a decimalseparator
     'we could also use CDbl and eventually replace comma (",") with period (".")
-    GetStr = Trim(Str(V))
+    GetStr = Trim(Str(v))
     Dim c As Integer: c = AscW(Left(GetStr, 1))
     Select Case c
     'Asc("0") = 48; Asc("9") = 57;
