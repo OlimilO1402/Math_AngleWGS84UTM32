@@ -215,3 +215,7 @@ Public Function ToKoUmrLink() As String
     Dim coords As String: coords = GetStr(m_Lat.ToGrad) & "," & GetStr(m_Lon.ToGrad)
     ToKoUmrLink = "https://www.koordinaten-umrechner.de/decimal/" & coords & "?karte=OpenStreetMap&zoom=8"
 End Function
+
+Public Function ToGEWeb() As String
+    ToGEWeb = Trim(Str(Me.Latitude.GradF)) & "," & Trim(Str(Me.Longitude.GradF)) & "," & Trim(Str(Me.Height) & "a") & "," & Trim(Str(1000) & "d") & ", 35y, 0h, 0t, 0r"
+End Function

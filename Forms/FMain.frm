@@ -231,17 +231,17 @@ Private Sub Form_Unload(Cancel As Integer)
 End Sub
 
 Private Sub Form_Resize()
-    Dim L As Single, T As Single: T = LBFamousPlaces.Top
+    Dim l As Single, T As Single: T = LBFamousPlaces.Top
     Dim W As Single: W = Me.ScaleWidth / 2
     Dim H As Single: H = Me.ScaleHeight - LBFamousPlaces.Top - TxtResults.Height
-    If W > 0 And H > 0 Then LBFamousPlaces.Move L, T, W, H
-    L = LBFamousPlaces.Left + LBFamousPlaces.Width
-    If W > 0 And H > 0 Then LBTrip.Move L, T, W, H: LblTripResults.Left = L
-    L = 0
+    If W > 0 And H > 0 Then LBFamousPlaces.Move l, T, W, H
+    l = LBFamousPlaces.Left + LBFamousPlaces.Width
+    If W > 0 And H > 0 Then LBTrip.Move l, T, W, H: LblTripResults.Left = l
+    l = 0
     H = TxtResults.Height 'Me.ScaleHeight - T - LBFamousPlaces.Height
     T = Me.ScaleHeight - H
     W = Me.ScaleWidth
-    If W > 0 And H > 0 Then TxtResults.Move L, T, W, H
+    If W > 0 And H > 0 Then TxtResults.Move l, T, W, H
 End Sub
 
 Private Sub AddPlaces()
@@ -409,7 +409,7 @@ Private Sub mnuGeoPosAdd_Click()
     'Dim s As String: s = InputBox("Add a new Place, values separated by semicolon.", "Add New Place: Lat; Lon; Height; Name", "45°; 10°; 150; My new place")
     'If s = vbNullString Then Exit Sub 'Cancel
     
-    Dim s As String: s = "45°; 10°; 150; My new place"
+    Dim s As String: s = "45°; 10°; 40; My new place"
     Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
     
     FGeoPos.Move Me.Left + (Me.Width - FGeoPos.Width) / 2, Me.Top + (Me.Height - FGeoPos.Height) / 2
@@ -485,10 +485,17 @@ Private Sub mnuStartGEarth_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
     Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
-    If FileExists(m_pfnKml) Then Kill m_pfnKml
-    If SaveFile(m_pfnKml, gps.ToStrKml) Then
-        'maybe here edit the path to your Google Earth installation
-        Dim cmd As String: cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
+    Dim cmd As String
+    If FileExists(pfnGE) Then
+        If FileExists(m_pfnKml) Then Kill m_pfnKml
+        If SaveFile(m_pfnKml, gps.ToStrKml) Then
+            'maybe here edit the path to your Google Earth installation
+            cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
+            Shell cmd, vbNormalFocus
+        End If
+    Else
+        'https://earth.google.com/web/@48.01091401,10.61795265,624.60371552a,100.07091926d,35y,0h,0t,0r
+        cmd = """" & pfnFF & """" & " " & """" & MMain.GEWeb & gps.ToGEWeb & """"
         Shell cmd, vbNormalFocus
     End If
 End Sub

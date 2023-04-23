@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form FGeoPos 
    BorderStyle     =   4  'Festes Werkzeugfenster
    Caption         =   "Dialog Geo Position"
-   ClientHeight    =   2895
+   ClientHeight    =   3135
    ClientLeft      =   45
    ClientTop       =   390
    ClientWidth     =   5535
@@ -18,16 +18,24 @@ Begin VB.Form FGeoPos
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   2895
+   ScaleHeight     =   3135
    ScaleWidth      =   5535
    ShowInTaskbar   =   0   'False
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.TextBox TxtNHN 
+      Alignment       =   2  'Zentriert
+      Height          =   375
+      Left            =   2040
+      TabIndex        =   12
+      Top             =   1080
+      Width           =   2055
+   End
    Begin VB.TextBox TxtLongitude 
       Alignment       =   2  'Zentriert
       Height          =   375
       Left            =   2040
       TabIndex        =   11
-      Top             =   720
+      Top             =   600
       Width           =   2055
    End
    Begin VB.TextBox TxtLatitude 
@@ -43,14 +51,14 @@ Begin VB.Form FGeoPos
       Left            =   1200
       MultiLine       =   -1  'True
       TabIndex        =   5
-      Top             =   1320
+      Top             =   1560
       Width           =   4215
    End
    Begin VB.ComboBox CmbEW 
       Height          =   345
       Left            =   1200
       TabIndex        =   2
-      Top             =   720
+      Top             =   600
       Width           =   735
    End
    Begin VB.ComboBox CmbNS 
@@ -75,7 +83,7 @@ Begin VB.Form FGeoPos
       Height          =   375
       Left            =   1200
       TabIndex        =   6
-      Top             =   2400
+      Top             =   2640
       Width           =   1455
    End
    Begin VB.CommandButton BtnCancel 
@@ -93,7 +101,7 @@ Begin VB.Form FGeoPos
       Height          =   375
       Left            =   2880
       TabIndex        =   7
-      Top             =   2400
+      Top             =   2640
       Width           =   1455
    End
    Begin VB.CommandButton BtnEditLongitude 
@@ -110,7 +118,7 @@ Begin VB.Form FGeoPos
       Height          =   375
       Left            =   4200
       TabIndex        =   3
-      Top             =   720
+      Top             =   600
       Width           =   1215
    End
    Begin VB.CommandButton BtnEditLatitude 
@@ -130,13 +138,31 @@ Begin VB.Form FGeoPos
       Top             =   120
       Width           =   1215
    End
+   Begin VB.Label Label2 
+      AutoSize        =   -1  'True
+      Caption         =   "[m+NHN]"
+      Height          =   225
+      Left            =   4200
+      TabIndex        =   14
+      Top             =   1080
+      Width           =   810
+   End
+   Begin VB.Label Label1 
+      AutoSize        =   -1  'True
+      Caption         =   "Height above sea level:"
+      Height          =   345
+      Left            =   120
+      TabIndex        =   13
+      Top             =   1080
+      Width           =   1815
+   End
    Begin VB.Label Label5 
       AutoSize        =   -1  'True
       Caption         =   "Longitude:"
       Height          =   225
       Left            =   120
       TabIndex        =   9
-      Top             =   720
+      Top             =   600
       Width           =   855
    End
    Begin VB.Label Label4 
@@ -154,7 +180,7 @@ Begin VB.Form FGeoPos
       Height          =   225
       Left            =   120
       TabIndex        =   4
-      Top             =   1320
+      Top             =   1560
       Width           =   945
    End
 End
@@ -197,10 +223,23 @@ Private Sub UpdateView()
     CmbEW.Text = m_GeoPos.Longitude.Dir
     TxtLatitude.Text = m_GeoPos.Latitude.ToStr_DMS
     TxtLongitude.Text = m_GeoPos.Longitude.ToStr_DMS
+    TxtNHN.Text = m_GeoPos.Height
     TxtDescription.Text = m_GeoPos.Name
 End Sub
 
+Private Sub UpdateData()
+    m_GeoPos.Latitude.Dir = Left(CmbNS.Text, 1)
+    m_GeoPos.Longitude.Dir = Left(CmbEW.Text, 1)
+    m_GeoPos.Name = TxtDescription.Text
+    m_GeoPos.Latitude.Parse TxtLatitude.Text
+    m_GeoPos.Longitude.Parse TxtLongitude.Text
+    Dim h As Double
+    If Not Double_TryParse(TxtNHN.Text, h) Then Exit Sub
+    m_GeoPos.Height = h
+End Sub
+
 Private Sub BtnOK_Click()
+    UpdateData
     m_Result = vbOK:     Unload Me
 End Sub
 
@@ -232,15 +271,26 @@ Private Sub CmbEW_Click()
     UpdateView
 End Sub
 
-Private Sub TxtDescription_LostFocus()
-    m_GeoPos.Name = TxtDescription.Text
-End Sub
-
 Private Sub TxtLatitude_LostFocus()
     m_GeoPos.Latitude.Parse TxtLatitude.Text
+    UpdateView
 End Sub
 
 Private Sub TxtLongitude_LostFocus()
     m_GeoPos.Longitude.Parse TxtLongitude.Text
+    UpdateView
 End Sub
+
+Private Sub TxtNHN_LostFocus()
+    Dim h As Double
+    If Not Double_TryParse(TxtNHN.Text, h) Then Exit Sub
+    m_GeoPos.Height = h
+    UpdateView
+End Sub
+
+Private Sub TxtDescription_LostFocus()
+    m_GeoPos.Name = TxtDescription.Text
+    UpdateView
+End Sub
+
 

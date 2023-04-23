@@ -4,6 +4,7 @@ Public pathTemp  As String 'path to tmp directory
 Public pathDocs  As String 'path to documents directory
 Public pathProgs As String 'path to program files directory
 Public pfnGE     As String 'pathfilename to google earth pro (or link to google earth web)
+Public GEWeb     As String 'base link to google earth web
 Public pfnFF     As String 'pathfilename to firefox
 Public fnKml     As String 'default filename of kml file
 
@@ -16,6 +17,7 @@ Sub Main()
     'maybe here edit the path to your default or preferred internet browser
     pfnFF = pathProgs & "\Mozilla Firefox\firefox.exe"
     pfnGE = pathProgs & "\Google\Google Earth Pro\client\googleearth.exe"
+    GEWeb = "https://earth.google.com/web/@" 'LatitudeInDegree, LongitudeInDegree, height,
     fnKml = "AngleWGS84UTM32GoogleEarth.kml"
     
     MMath.Init
@@ -24,10 +26,10 @@ Sub Main()
     'FTestAngle.Show
 End Sub
 
-Public Function GetStr(ByVal V As Double) As String
+Public Function GetStr(ByVal v As Double) As String
     'Converts a Double to String by using the function Str for ensuring "." as a decimalseparator
     'we could also use cdbl and eventually replace a comma (",") with a period (".")
-    GetStr = Trim(Str(V))
+    GetStr = Trim(Str(v))
     Dim c As Integer: c = AscW(Left(GetStr, 1))
     Select Case c
     'Asc("0") = 48; Asc("9") = 57;
