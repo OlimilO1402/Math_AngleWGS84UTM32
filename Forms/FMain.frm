@@ -184,6 +184,9 @@ Begin VB.Form FMain
       Begin VB.Menu mnuOptShowAngles 
          Caption         =   "Show Angle-Dialog"
       End
+      Begin VB.Menu mnuOptStartGEWeb 
+         Caption         =   "Start Google-Earth-Web (not Pro)"
+      End
    End
 End
 Attribute VB_Name = "FMain"
@@ -473,6 +476,10 @@ Private Sub mnuGeoPosDelete_Click()
     'UpdateView
 End Sub
 
+Private Sub mnuOptStartGEWeb_Click()
+    mnuOptStartGEWeb.Checked = Not mnuOptStartGEWeb.Checked
+End Sub
+
 Private Sub mnuStartKoUmre_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
@@ -486,20 +493,27 @@ Private Sub mnuStartGEarth_Click()
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
     Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
     Dim cmd As String
-    If FileExists(pfnGE) Then
-        If FileExists(m_pfnKml) Then Kill m_pfnKml
-        If SaveFile(m_pfnKml, gps.ToStrKml) Then
-            'maybe here edit the path to your Google Earth installation
-            cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
-            Shell cmd, vbNormalFocus
+    If Not mnuOptStartGEWeb.Checked Then
+        If FileExists(pfnGE) Then
+            If FileExists(m_pfnKml) Then Kill m_pfnKml
+            If SaveFile(m_pfnKml, gps.ToStrKml) Then
+                'maybe here edit the path to your Google Earth installation
+                cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
+                Shell cmd, vbNormalFocus
+            Else
+                MsgBox "Could not write kmlfile: " & vbCrLf & m_pfnKml
+            End If
+            Exit Sub
         End If
-    Else
-        'https://earth.google.com/web/@48.01091401,10.61795265,624.60371552a,100.07091926d,35y,0h,0t,0r
-        cmd = """" & pfnFF & """" & " " & """" & MMain.GEWeb & gps.ToGEWeb & """"
-        Shell cmd, vbNormalFocus
     End If
+Try: On Error GoTo Catch
+    'https://earth.google.com/web/@48.01091401,10.61795265,624.60371552a,100.07091926d,35y,0h,0t,0r
+    cmd = """" & pfnFF & """" & " " & """" & MMain.GEWeb & gps.ToGEWeb & """"
+    Shell cmd, vbNormalFocus
+    Exit Sub
+Catch:
+    MsgBox "Could not start google earth, maybe googleearth.exe or firefox.exe not found"
 End Sub
-
 Private Sub mnuAddToTrip_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub

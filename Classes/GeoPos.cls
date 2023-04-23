@@ -217,5 +217,5 @@ Public Function ToKoUmrLink() As String
 End Function
 
 Public Function ToGEWeb() As String
-    ToGEWeb = Trim(Str(Me.Latitude.GradF)) & "," & Trim(Str(Me.Longitude.GradF)) & "," & Trim(Str(Me.Height) & "a") & "," & Trim(Str(1000) & "d") & ", 35y, 0h, 0t, 0r"
+    ToGEWeb = Trim(Str(Me.Latitude.GradF)) & "," & Trim(Str(Me.Longitude.GradF)) & "," & Trim(Str(Me.Height) & "a") & "," & Trim(Str(1000) & "d") & ",35y,0h,0t,0r"
 End Function
