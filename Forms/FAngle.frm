@@ -232,6 +232,8 @@ Option Explicit
 Private m_Angle  As AngleDec
 Private m_Result As VbMsgBoxResult
 Private m_isUpdatingView As Boolean
+Private m_LastTB As TextBox
+Private m_PropA  As PropLet
 
 Public Function ShowDialog(aAngle As AngleDec, FOwner As Form) As VbMsgBoxResult
     Set m_Angle = aAngle.Clone
@@ -244,23 +246,21 @@ End Function
 
 Private Sub UpdateView()
     m_isUpdatingView = True
-    
-    'TxtAngleRad.Text = m_Angle.ToRad ' Format(m_Angle.ToRad, "0.###########")
     TxtAngleRad.Text = Format(m_Angle.ToRad, "0.###########")
-    
-    'TxtAngleDeg.Text = m_Angle.ToGrad 'Format(m_Angle.ToGrad, "0.##########")
     TxtAngleDeg.Text = Format(m_Angle.ToGrad, "0.##########")
-    
     TxtDMSAngleDeg.Text = Format(m_Angle.Grad, "0")
     TxtDMSAngleMin.Text = Format(m_Angle.Minute, "0")
-    
-    'TxtDMSAngleSec.Text = m_Angle.SecondF 'Format(m_Angle.SecondF, "0.######")
     TxtDMSAngleSec.Text = Format(m_Angle.SecondF, "0.######")
-    
     m_isUpdatingView = False
 End Sub
 
+Private Sub UpdateData()
+    If m_LastTB Is Nothing Then Exit Sub
+    TB_OnLostFocus
+End Sub
+
 Private Sub BtnOK_Click()
+    UpdateData
     m_Result = vbOK:     Unload Me
 End Sub
 
@@ -268,102 +268,50 @@ Private Sub BtnCancel_Click()
     m_Result = vbCancel: Unload Me
 End Sub
 
+Private Sub TB_OnLostFocus()
+    If m_isUpdatingView Then Exit Sub
+    Dim s As String: s = m_LastTB.Text
+    Dim alp
+    If MString.Decimal_TryParse(s, alp) Then
+        m_PropA.Invoke = alp
+    Else
+        MsgBox "Failed to parse a numeric value from: " & s
+        Exit Sub
+    End If
+    UpdateView
+End Sub
+
+Private Sub TxtAngleRad_GotFocus()
+    Set m_LastTB = TxtAngleRad:       Set m_PropA = MNew.PropLet(m_Angle, "Value")
+End Sub
 Private Sub TxtAngleRad_LostFocus()
-    If m_isUpdatingView Then Exit Sub
-    Dim s As String: s = TxtAngleRad.Text
-    Dim alpRad
-    If MString.Decimal_TryParse(s, alpRad) Then
-        m_Angle.New_ alpRad
-    Else
-        MsgBox "Failed to parse a numeric value from: " & s
-        Exit Sub
-    End If
-    UpdateView
+    TB_OnLostFocus
 End Sub
 
+Private Sub TxtAngleDeg_GotFocus()
+    Set m_LastTB = TxtAngleDeg:       Set m_PropA = MNew.PropLet(m_Angle, "GradF")
+End Sub
 Private Sub TxtAngleDeg_LostFocus()
-    If m_isUpdatingView Then Exit Sub
-    Dim s As String: s = TxtAngleDeg.Text
-    Dim alpDeg
-    If MString.Decimal_TryParse(s, alpDeg) Then
-        m_Angle.NewD_ alpDeg
-    Else
-        MsgBox "Failed to parse a numeric value from: " & s
-        Exit Sub
-    End If
-    UpdateView
+    TB_OnLostFocus
 End Sub
 
+Private Sub TxtDMSAngleDeg_GotFocus()
+    Set m_LastTB = TxtDMSAngleDeg:    Set m_PropA = MNew.PropLet(m_Angle, "Grad")
+End Sub
 Private Sub TxtDMSAngleDeg_LostFocus()
-    If m_isUpdatingView Then Exit Sub
-    Dim s As String: s = TxtDMSAngleDeg.Text
-    Dim alpDeg
-    If MString.Decimal_TryParse(s, alpDeg) Then
-        m_Angle.Grad = alpDeg
-    Else
-        MsgBox "Failed to parse a numeric value from: " & s
-        Exit Sub
-    End If
-    UpdateView
+    TB_OnLostFocus
 End Sub
 
+Private Sub TxtDMSAngleMin_GotFocus()
+    Set m_LastTB = TxtDMSAngleMin:    Set m_PropA = MNew.PropLet(m_Angle, "Minute")
+End Sub
 Private Sub TxtDMSAngleMin_LostFocus()
-    If m_isUpdatingView Then Exit Sub
-    Dim s As String: s = TxtDMSAngleMin.Text
-    Dim alpMin
-    If MString.Decimal_TryParse(s, alpMin) Then
-        m_Angle.Minute = alpMin
-    Else
-        MsgBox "Failed to parse a numeric value from: " & s
-        Exit Sub
-    End If
-    UpdateView
+    TB_OnLostFocus
 End Sub
 
+Private Sub TxtDMSAngleSec_GotFocus()
+    Set m_LastTB = TxtDMSAngleSec:    Set m_PropA = MNew.PropLet(m_Angle, "SecondF")
+End Sub
 Private Sub TxtDMSAngleSec_LostFocus()
-    If m_isUpdatingView Then Exit Sub
-    Dim s As String: s = TxtDMSAngleSec.Text
-    Dim alpSec
-    If MString.Decimal_TryParse(s, alpSec) Then
-        m_Angle.SecondF = alpSec
-    Else
-        MsgBox "Failed to parse a numeric value from: " & s
-        Exit Sub
-    End If
-    UpdateView
+    TB_OnLostFocus
 End Sub
-
-'Private Sub GetDMS()
-'    Dim s As String
-'    Dim alpDeg As Long, alpMin, alpSec
-'
-'    s = TxtDMSAngleDeg.Text
-'    If Len(s) = 0 Then s = "0"
-'    If IsNumeric(s) Then alpDeg = CLng(s) Else MsgBox "Failed to parse a numeric value from: " & s
-'
-'    s = TxtDMSAngleMin.Text
-'    If Len(s) = 0 Then s = "0"
-'    'If Not MString.Double_TryParse(s, alpMin) Then
-'    If Not MString.Decimal_TryParse(s, alpMin) Then
-'        If IsNumeric(s) Then
-'            alpMin = CLng(s)
-'        Else
-'            MsgBox "Failed to parse a numeric value from: " & s
-'        End If
-'    End If
-'
-'    s = TxtDMSAngleSec.Text
-'    If Len(s) = 0 Then s = "0"
-'    'If Not MString.Double_TryParse(s, alpSec) Then
-'    If Not MString.Decimal_TryParse(s, alpSec) Then
-'        If IsNumeric(s) Then
-'            alpSec = CLng(s)
-'        Else
-'            MsgBox "Failed to parse a numeric value from: " & s
-'        End If
-'    End If
-'
-'    m_Angle.NewDMS_ alpDeg, alpMin, alpSec
-'    UpdateView
-'
-'End Sub

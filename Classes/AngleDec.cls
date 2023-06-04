@@ -179,6 +179,9 @@ End Function
 Public Property Get Value()
     Value = CDec(m_Angle)
 End Property
+Public Property Let Value(DecValue)
+    m_Angle = DecValue
+End Property
 
 Public Function ToRad()
     ToRad = CDec(m_Angle)
@@ -230,11 +233,9 @@ Public Property Get GradF()
     Dim eps: eps = CDec(Abs(Abs(GradF) - Abs(rgf)))
     If eps <= CDec(0.0000000001) Then GradF = rgf
 End Property
-'Public Property Let GradF(ByVal Value)
-'    Dim gd ', md, sd
-'    SeparateDMS m_Angle, gd, , md, , sd
-'    NewDMS_ Value, gd, sd
-'End Property
+Public Property Let GradF(ByVal Value)
+    m_Angle = Value * MMath.Pi / 180#
+End Property
 
 Public Property Get Grad() As Long
     SeparateDMS m_Angle, , Grad
@@ -708,6 +709,9 @@ End Property
 Private Property Get Angle_GradF() As Double
     Angle_GradF = Me.GradF
 End Property
+Private Property Let Angle_GradF(ByVal Value As Double)
+    Me.GradF = Value
+End Property
 
 Private Property Let Angle_Millisec(ByVal RHS As Long)
     Me.Millisec = RHS
@@ -804,3 +808,7 @@ End Function
 Private Property Get Angle_Value()
     Angle_Value = m_Angle
 End Property
+Private Property Let Angle_Value(aValue)
+    m_Angle = aValue
+End Property
+

@@ -66,6 +66,7 @@ Begin VB.Form FMain
       EndProperty
       Height          =   2985
       Left            =   0
+      MultiSelect     =   1  '1 -Einfach
       OLEDragMode     =   1  'Automatisch
       OLEDropMode     =   1  'Manuell
       TabIndex        =   0
@@ -234,17 +235,17 @@ Private Sub Form_Unload(Cancel As Integer)
 End Sub
 
 Private Sub Form_Resize()
-    Dim l As Single, T As Single: T = LBFamousPlaces.Top
+    Dim L As Single, T As Single: T = LBFamousPlaces.Top
     Dim W As Single: W = Me.ScaleWidth / 2
-    Dim H As Single: H = Me.ScaleHeight - LBFamousPlaces.Top - TxtResults.Height
-    If W > 0 And H > 0 Then LBFamousPlaces.Move l, T, W, H
-    l = LBFamousPlaces.Left + LBFamousPlaces.Width
-    If W > 0 And H > 0 Then LBTrip.Move l, T, W, H: LblTripResults.Left = l
-    l = 0
-    H = TxtResults.Height 'Me.ScaleHeight - T - LBFamousPlaces.Height
-    T = Me.ScaleHeight - H
+    Dim h As Single: h = Me.ScaleHeight - LBFamousPlaces.Top - TxtResults.Height
+    If W > 0 And h > 0 Then LBFamousPlaces.Move L, T, W, h
+    L = LBFamousPlaces.Left + LBFamousPlaces.Width
+    If W > 0 And h > 0 Then LBTrip.Move L, T, W, h: LblTripResults.Left = L
+    L = 0
+    h = TxtResults.Height 'Me.ScaleHeight - T - LBFamousPlaces.Height
+    T = Me.ScaleHeight - h
     W = Me.ScaleWidth
-    If W > 0 And H > 0 Then TxtResults.Move l, T, W, H
+    If W > 0 And h > 0 Then TxtResults.Move L, T, W, h
 End Sub
 
 Private Sub AddPlaces()
@@ -468,11 +469,28 @@ Private Sub mnuGeoPosEdit_Click()
     LBFamousPlaces.List(LBFamousPlaces.ListIndex) = gps.ToStr
 End Sub
 
+Private Function LBFamousPlaces_GetSelection() As Long()
+    Dim i As Long, c As Long
+    ReDim v(0 To LBFamousPlaces.SelCount - 1)
+    For i = 0 To LBFamousPlaces.ListCount - 1
+        If LBFamousPlaces.Selected(i) Then
+            v(c) = i
+            c = c + 1
+        End If
+    Next
+End Function
+
 Private Sub mnuGeoPosDelete_Click()
-    Dim i As Long: i = LBFamousPlaces.ListIndex
-    If i < 0 Then Exit Sub
-    m_FamousPlaces.Remove i + 1
-    LBFamousPlaces.RemoveItem i
+'    Dim i As Long: i = LBFamousPlaces.ListIndex
+'    If i < 0 Then Exit Sub
+'    m_FamousPlaces.Remove i + 1
+'    LBFamousPlaces.RemoveItem i
+    'remove the items in the collection m_FamousPlaces and in the ListBox LBFamousPlaces
+    Dim selectedindices() As Long: v = LBFamousPlaces_GetSelection
+    Dim i As Long
+    For i = 0 To UBound(selectedindices)
+        
+    Next
     'UpdateView
 End Sub
 

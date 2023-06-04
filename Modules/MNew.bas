@@ -33,8 +33,8 @@ Public Function AngleDecG(ByVal angleInGon As Double) As AngleDec
     Set AngleDecG = New AngleDec: AngleDecG.NewG_ angleInGon
 End Function
 
-Public Function AngleDecDMS(ByVal deg As Long, ByVal min As Long, ByVal sec As Double) As AngleDec
-    Set AngleDecDMS = New AngleDec: AngleDecDMS.NewDMS_ deg, min, sec
+Public Function AngleDecDMS(ByVal deg As Long, ByVal Min As Long, ByVal sec As Double) As AngleDec
+    Set AngleDecDMS = New AngleDec: AngleDecDMS.NewDMS_ deg, Min, sec
 End Function
 
 Public Function AngleDecS(ByVal angleInDMS As String) As AngleDec
@@ -55,3 +55,9 @@ End Function
 Public Function UTM32G(aGeoPos As GeoPos, elli As Ellipsoid) As UTM32
     Set UTM32G = New UTM32: UTM32G.NewG aGeoPos, elli
 End Function
+
+
+Public Function PropLet(Obj As Object, ByVal PropName As String) As PropLet
+    Set PropLet = New PropLet: PropLet.New_ Obj, PropName
+End Function
+

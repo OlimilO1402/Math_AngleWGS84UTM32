@@ -177,6 +177,9 @@ End Function
 Public Property Get Value()
     Value = m_Angle
 End Property
+Public Property Let Value(DblValue)
+    m_Angle = DblValue
+End Property
 
 Public Function ToRad() As Double
     ToRad = m_Angle
@@ -228,11 +231,9 @@ Public Property Get GradF() As Double
     Dim eps As Double: eps = Abs(Abs(GradF) - Abs(rgf))
     If eps <= 0.0000000001 Then GradF = rgf
 End Property
-'Public Property Let GradF(ByVal Value)
-'    Dim gd ', md, sd
-'    SeparateDMS m_Angle, gd, , md, , sd
-'    NewDMS_ Value, gd, sd
-'End Property
+Public Property Let GradF(ByVal Value As Double)
+    m_Angle = Value * MMath.Pi / 180#
+End Property
 
 Public Property Get Grad() As Long
     SeparateDMS m_Angle, , Grad
