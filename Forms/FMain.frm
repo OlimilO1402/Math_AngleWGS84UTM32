@@ -66,7 +66,7 @@ Begin VB.Form FMain
       EndProperty
       Height          =   2985
       Left            =   0
-      MultiSelect     =   1  '1 -Einfach
+      MultiSelect     =   2  'Erweitert
       OLEDragMode     =   1  'Automatisch
       OLEDropMode     =   1  'Manuell
       TabIndex        =   0
@@ -127,7 +127,7 @@ Begin VB.Form FMain
          Caption         =   "Add To Trip"
       End
       Begin VB.Menu mnuGeoPosDelete 
-         Caption         =   "Delete Item"
+         Caption         =   "Delete Item(s)"
       End
       Begin VB.Menu mnuGeoPosSep1 
          Caption         =   "-"
@@ -471,13 +471,15 @@ End Sub
 
 Private Function LBFamousPlaces_GetSelection() As Long()
     Dim i As Long, c As Long
-    ReDim v(0 To LBFamousPlaces.SelCount - 1)
+    If LBFamousPlaces.SelCount = 0 Then Exit Function
+    ReDim v(0 To LBFamousPlaces.SelCount - 1) As Long
     For i = 0 To LBFamousPlaces.ListCount - 1
         If LBFamousPlaces.Selected(i) Then
             v(c) = i
             c = c + 1
         End If
     Next
+    LBFamousPlaces_GetSelection = v
 End Function
 
 Private Sub mnuGeoPosDelete_Click()
@@ -486,12 +488,22 @@ Private Sub mnuGeoPosDelete_Click()
 '    m_FamousPlaces.Remove i + 1
 '    LBFamousPlaces.RemoveItem i
     'remove the items in the collection m_FamousPlaces and in the ListBox LBFamousPlaces
-    Dim selectedindices() As Long: v = LBFamousPlaces_GetSelection
-    Dim i As Long
-    For i = 0 To UBound(selectedindices)
-        
+Try: On Error GoTo Catch
+    Dim selectedIndices() As Long: selectedIndices = LBFamousPlaces_GetSelection
+    Dim i As Long, u As Long: u = UBound(selectedIndices)
+    Dim si As Long, c As Long: c = u + 1
+    Dim s As String: s = "Delete " & c & " element" & IIf(c > 1, "s", "") & " from the list?"
+    If MsgBox(s, vbOKCancel) = vbCancel Then Exit Sub
+    For i = u To 0 Step -1
+        si = selectedIndices(i)
+        'delete from Collection m_FamousPlaces
+        m_FamousPlaces.Remove si + 1
+        'delete from ListBox LBFamousPlaces
+        LBFamousPlaces.RemoveItem si
     Next
     'UpdateView
+    Exit Sub
+Catch:
 End Sub
 
 Private Sub mnuOptStartGEWeb_Click()
@@ -535,10 +547,17 @@ End Sub
 Private Sub mnuAddToTrip_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
-    Dim gps As GeoPos: Set gps = GetGeoPos(s)
-    If gps Is Nothing Then Exit Sub
-    m_Trip.Add gps
-    LBTrip.AddItem s
+    Dim selectedIndices() As Long: selectedIndices = LBFamousPlaces_GetSelection
+    Dim i As Long, u As Long: u = UBound(selectedIndices)
+    Dim si As Long, gps As GeoPos
+    For i = 0 To u
+        si = selectedIndices(i)
+        s = LBFamousPlaces.List(si)
+        Set gps = GetGeoPos(s)
+        If gps Is Nothing Then Exit Sub
+        m_Trip.Add gps
+        LBTrip.AddItem s
+    Next
     UpdateTripLengthView
 End Sub
 
