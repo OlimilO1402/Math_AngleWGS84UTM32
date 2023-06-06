@@ -21,6 +21,14 @@ Friend Sub New_(Latitude As AngleDec, Longitude As AngleDec, Optional ByVal Heig
     Set m_Lat = Latitude: Set m_Lon = Longitude: m_Height = Height: m_Name = aName
 End Sub
 
+'copy to MNew:
+'Public Function GeoPos(Latitude As AngleDec, Longitude As AngleDec, Optional ByVal Height As Double, Optional ByVal Name As String) As GeoPos
+'    Set GeoPos = New GeoPos: GeoPos.New_ Latitude, Longitude, Height, Name
+'End Function
+'Public Function GeoPosS(s As String) As GeoPos
+'    Set GeoPosS = New GeoPos: GeoPosS.Parse s
+'End Function
+
 Friend Sub NewC(other As GeoPos)
     m_Name = other.Name:     Set m_Lat = other.Latitude.Clone
     m_Height = other.Height: Set m_Lon = other.Longitude.Clone
