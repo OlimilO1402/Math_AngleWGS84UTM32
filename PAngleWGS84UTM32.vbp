@@ -16,6 +16,7 @@ Module=MPtr; ..\Ptr_Pointers\Modules\MPtr.bas
 Class=AngleDec; Classes\AngleDec.cls
 Class=PropLet; ..\Sys_FuncAction\Classes\PropLet.cls
 ResFile32="Resources\MyRes.res"
+Module=MOpenLC; Modules\MOpenLC.bas
 IconForm="FMain"
 Startup="Sub Main"
 HelpFile=""
