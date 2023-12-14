@@ -28,13 +28,36 @@ Friend Sub NewG(aGeoPos As GeoPos, elli As Ellipsoid)
     m_Name = aGeoPos.Name: m_Height = aGeoPos.Height
 End Sub
 
+Friend Sub NewC(other As UTM32)
+    With other
+        m_Name = .Name
+        m_Northing = .Northing
+        m_Easting = .Easting
+        m_ZoneNum = .ZoneNum
+        m_ZoneStr = .ZoneStr
+    End With
+End Sub
+
+Friend Function Clone() As UTM32
+    Set Clone = New UTM32: Clone.NewC Me
+End Function
+
+
+Public Property Let Northing(ByVal Value As Double)
+    m_Northing = Value
+End Property
 Public Property Get Northing() As Double
     Northing = m_Northing
 End Property
 
+
+Public Property Let Easting(ByVal Value As Double)
+    m_Easting = Value
+End Property
 Public Property Get Easting() As Double
     Easting = m_Easting
 End Property
+
 
 Public Property Get ZoneNum() As Integer
     ZoneNum = m_ZoneNum
@@ -42,14 +65,14 @@ End Property
 Public Property Get ZoneStr() As String
     ZoneStr = m_ZoneStr
 End Property
-
 Public Property Let Zone(ByVal Value As String)
-    m_ZoneNum = StrToUL(Value, m_ZoneStr)
+    m_ZoneNum = StrToUL(Trim(Value), m_ZoneStr)
 End Property
+
 
 Private Function StrToUL(ByVal Value As String, sRest_out As String) As Long
     Dim State As Integer, i As Long, ch As String, ac As Integer, l As Long: l = Len(Value)
-    Dim zs As String, zi As Integer: zi = -1
+    Dim zs As String, zi As Integer ': zi = -1
     Do
         i = i + 1
         ch = Mid(Value, i, 1)
@@ -57,11 +80,14 @@ Private Function StrToUL(ByVal Value As String, sRest_out As String) As Long
         Select Case State
         Case 0
              Select Case ac
-             Case 48 To 57
-                If zi < 0 Then zi = 1
-                zi = zi * 10 + ac - 57
+             Case 48 To 57 '0 to 9
+                'If zi < 0 Then zi = 1
+                zi = zi * 10 + ac - 48
+                'zi = zi * 10 '+ ac - 57
              Case Else
-                If zi < 0 Then State = 2 Else State = 1
+                'If zi < 0 Then State = 2 Else State = 1
+                State = 1
+                i = i - 1
              End Select
         Case 1
              Select Case ac
@@ -100,9 +126,15 @@ Friend Function ToStr() As String
 End Function
 
 Friend Function ToWGS84(elli As Ellipsoid) As GeoPos
-    Dim Lat As Double, Lon As Double
-    LLtoUTM elli.EquatorialRadius, elli.eccentricitySquared, Lat, Lon
-    Set ToWGS84 = New GeoPos: ToWGS84.New_ MNew.AngleG(Lat), MNew.AngleG(Lon), m_Height, m_Name
+    Dim lat As Double, lon As Double
+    'LLtoUTM elli.EquatorialRadius, elli.eccentricitySquared, lat, lon
+    UTMtoLL elli.EquatorialRadius, elli.eccentricitySquared, m_Northing, m_Easting, Me.Zone, lat, lon
+    'Set ToWGS84 = New GeoPos: ToWGS84.New_ MNew.AngleD(lat), MNew.AngleD(lon), m_Height, m_Name
+    Dim ALat As AngleDec: Set ALat = MNew.AngleDecD(lat)
+    ALat.Dir = IIf(lat < 0, "S", "N")
+    Dim ALon As AngleDec: Set ALon = MNew.AngleDecD(lon)
+    ALon.Dir = IIf(lat < 0, "W", "E")
+    Set ToWGS84 = MNew.GeoPos(ALat, ALon, m_Height, m_Name)
 End Function
 
 Private Sub LLtoUTM(ByVal ERadius As Double, ByVal eccs As Double, ByVal LatGrad As Double, ByVal LonGrad As Double)
@@ -111,26 +143,26 @@ Private Sub LLtoUTM(ByVal ERadius As Double, ByVal eccs As Double, ByVal LatGrad
 '//North latitudes are positive, South latitudes are negative
 '//Lat and Long are in decimal degrees
 '//Written by Chuck Gantz- chuck.gantz@globalstar.com
-    Dim Lat        As Double: Lat = LatGrad
-    Dim Lon        As Double: Lon = LonGrad
+    Dim lat        As Double: lat = LatGrad
+    Dim lon        As Double: lon = LonGrad
     Dim a          As Double: a = ERadius
     Dim eccSquared As Double: eccSquared = eccs
     Const k0       As Double = 0.9996
         
 '//Make sure the longitude is between -180.00 .. 179.9
-    Dim LonTmp As Double: LonTmp = (Lon + 180) - Int((Lon + 180) / 360) * 360 - 180
-    Dim LatRad As Double: LatRad = Lat * MMath.Pi / 180
+    Dim LonTmp As Double: LonTmp = (lon + 180) - Int((lon + 180) / 360) * 360 - 180
+    Dim LatRad As Double: LatRad = lat * MMath.Pi / 180
     Dim LonRad As Double: LonRad = LonTmp * MMath.Pi / 180
     
     
     Dim ZoneNumber As Long: ZoneNumber = Int((LonTmp + 180) / 6) + 1
     
-    If Lat >= 56 And Lat < 64 And LonTmp >= 3 And LonTmp < 12 Then
+    If lat >= 56 And lat < 64 And LonTmp >= 3 And LonTmp < 12 Then
         ZoneNumber = 32
     End If
     
   'Special zones for Svalbard
-    If 72# <= Lat And Lat < 84# Then
+    If 72# <= lat And lat < 84# Then
         If 0# <= LonTmp And LonTmp < 9# Then
             ZoneNumber = 31
         ElseIf 9# <= LonTmp And LonTmp < 21# Then
@@ -148,12 +180,12 @@ Private Sub LLtoUTM(ByVal ERadius As Double, ByVal eccs As Double, ByVal LatGrad
     'sprintf(UTMZone, "%d%c", ZoneNumber, UTMLetterDesignator(Lat));
     'Me.Zone = ZoneNumber & UTMLetterDesignator(Lat)
     m_ZoneNum = ZoneNumber
-    m_ZoneStr = UTMLetterDesignator(Lat)
+    m_ZoneStr = UTMLetterDesignator(lat)
     'Debug.Print "UTMZone: " & m_UTMZone & " ZoneNumber: " & ZoneNumber & " UTMLetter: " & UTMLetterDesignator(Lat)
     
     Dim eccPrimeSquared As Double: eccPrimeSquared = (eccSquared) / (1 - eccSquared)
 
-    Dim N  As Double: N = a / VBA.Math.Sqr(1 - eccSquared * Sin(LatRad) * Sin(LatRad))
+    Dim n  As Double: n = a / VBA.Math.Sqr(1 - eccSquared * Sin(LatRad) * Sin(LatRad))
     Dim T  As Double: T = VBA.Math.Tan(LatRad) * VBA.Math.Tan(LatRad)
     Dim c  As Double: c = eccPrimeSquared * VBA.Math.Cos(LatRad) * VBA.Math.Cos(LatRad)
     Dim AA As Double: AA = Cos(LatRad) * (LonRad - LonOriginRad)
@@ -163,13 +195,13 @@ Private Sub LLtoUTM(ByVal ERadius As Double, ByVal eccs As Double, ByVal LatGrad
                                     + (15 * eccSquared * eccSquared / 256 + 45 * eccSquared * eccSquared * eccSquared / 1024) * Sin(4 * LatRad) _
                                     - (35 * eccSquared * eccSquared * eccSquared / 3072) * Sin(6 * LatRad))
     
-    m_Easting = CDbl((k0 * N * (AA + (1 - T + c) * AA * AA * AA / 6 _
+    m_Easting = CDbl((k0 * n * (AA + (1 - T + c) * AA * AA * AA / 6 _
                     + (5 - 18 * T + T * T + 72 * c - 58 * eccPrimeSquared) * AA * AA * AA * AA * AA / 120) _
                     + 500000#))
 
-    m_Northing = CDbl((k0 * (M + N * Tan(LatRad) * (AA * AA / 2 + (5 - T + 9 * c + 4 * c * c) * AA * AA * AA * AA / 24 _
+    m_Northing = CDbl((k0 * (M + n * Tan(LatRad) * (AA * AA / 2 + (5 - T + 9 * c + 4 * c * c) * AA * AA * AA * AA / 24 _
                  + (61 - 58 * T + T * T + 600 * c - 330 * eccPrimeSquared) * AA * AA * AA * AA * AA * AA / 720))))
-    If (Lat < 0) Then m_Northing = m_Northing + 10000000#  '; //10000000 meter offset for southern hemisphere
+    If (lat < 0) Then m_Northing = m_Northing + 10000000#  '; //10000000 meter offset for southern hemisphere
     
 End Sub
 
@@ -216,16 +248,16 @@ Private Sub UTMtoLL(ByVal ERadius As Double, ByVal eccs As Double, ByVal UTMNort
     Dim c1      As Double:      c1 = eccPrimeSquared * VBA.Math.Cos(phi1Rad) * VBA.Math.Cos(phi1Rad)
     Dim R1      As Double:      R1 = a * (1 - eccSquared) / ((1 - eccSquared * VBA.Math.Sin(phi1Rad) * VBA.Math.Sin(phi1Rad)) ^ 1.5)
     Dim d       As Double:       d = x / (N1 * k0)
-    Dim Lat     As Double
-    Lat = phi1Rad - (N1 * VBA.Math.Tan(phi1Rad) / R1) * (d * d / 2 - (5 + 3 * T1 + 10 * c1 - 4 * c1 * c1 - 9 * eccPrimeSquared) * d * d * d * d / 24 _
+    Dim lat     As Double
+    lat = phi1Rad - (N1 * VBA.Math.Tan(phi1Rad) / R1) * (d * d / 2 - (5 + 3 * T1 + 10 * c1 - 4 * c1 * c1 - 9 * eccPrimeSquared) * d * d * d * d / 24 _
                     + (61 + 90 * T1 + 298 * c1 + 45 * T1 * T1 - 252 * eccPrimeSquared - 3 * c1 * c1) * d * d * d * d * d * d / 720)
-    Lat = Lat * 180 / MMath.Pi 'rad2deg
+    lat = lat * 180 / MMath.Pi 'rad2deg
     
-    Dim Lon As Double
-    Lon = (d - (1 + 2 * T1 + c1) * d * d * d / 6 + (5 - 2 * c1 + 28 * T1 - 3 * c1 * c1 + 8 * eccPrimeSquared + 24 * T1 * T1) _
+    Dim lon As Double
+    lon = (d - (1 + 2 * T1 + c1) * d * d * d / 6 + (5 - 2 * c1 + 28 * T1 - 3 * c1 * c1 + 8 * eccPrimeSquared + 24 * T1 * T1) _
                     * d * d * d * d * d / 120) / Cos(phi1Rad)
-    Lon = LonOrigin + Lon * 180 / MMath.Pi 'rad2deg
+    lon = LonOrigin + lon * 180 / MMath.Pi 'rad2deg
     
-    Lat_out = Lat
-    Lon_out = Lon
+    Lat_out = lat
+    Lon_out = lon
 End Sub

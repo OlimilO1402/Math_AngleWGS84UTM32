@@ -235,17 +235,17 @@ Private Sub Form_Unload(Cancel As Integer)
 End Sub
 
 Private Sub Form_Resize()
-    Dim L As Single, T As Single: T = LBFamousPlaces.Top
+    Dim l As Single, T As Single: T = LBFamousPlaces.Top
     Dim W As Single: W = Me.ScaleWidth / 2
-    Dim h As Single: h = Me.ScaleHeight - LBFamousPlaces.Top - TxtResults.Height
-    If W > 0 And h > 0 Then LBFamousPlaces.Move L, T, W, h
-    L = LBFamousPlaces.Left + LBFamousPlaces.Width
-    If W > 0 And h > 0 Then LBTrip.Move L, T, W, h: LblTripResults.Left = L
-    L = 0
-    h = TxtResults.Height 'Me.ScaleHeight - T - LBFamousPlaces.Height
-    T = Me.ScaleHeight - h
+    Dim H As Single: H = Me.ScaleHeight - LBFamousPlaces.Top - TxtResults.Height
+    If W > 0 And H > 0 Then LBFamousPlaces.Move l, T, W, H
+    l = LBFamousPlaces.Left + LBFamousPlaces.Width
+    If W > 0 And H > 0 Then LBTrip.Move l, T, W, H: LblTripResults.Left = l
+    l = 0
+    H = TxtResults.Height 'Me.ScaleHeight - T - LBFamousPlaces.Height
+    T = Me.ScaleHeight - H
     W = Me.ScaleWidth
-    If W > 0 And h > 0 Then TxtResults.Move L, T, W, h
+    If W > 0 And H > 0 Then TxtResults.Move l, T, W, H
 End Sub
 
 Private Sub AddPlaces()
@@ -302,7 +302,7 @@ Private Sub LBFamousPlaces_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then Exit Sub
     Dim gps As GeoPos: Set gps = MNew.GeoPosS(LBFamousPlaces.Text)
-    Dim utm As UTM32: Set utm = gps.ToUTM32(MUTM.Ellipsoids(22))   'the ellipsoid WGS-84
+    Dim utm As UTM32: Set utm = gps.ToUTM32(MUTM.EllipsoWGS84)   'the ellipsoid WGS-84 = number 22
     TxtResults.Text = utm.ToStr & vbCrLf & gps.ToStr & vbCrLf & gps.ToStrKml & vbCrLf & gps.ToKoUmrLink
 End Sub
 

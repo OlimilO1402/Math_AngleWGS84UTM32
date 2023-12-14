@@ -15,6 +15,7 @@ End Type
 
 'Public Ellipsoids As Ellipsoids
 Public Ellipsoids() As Ellipsoid
+Public EllipsoWGS84 As Ellipsoid
 
 Public Sub Init()
     ReDim Ellipsoids(-1 To 22)
@@ -43,7 +44,7 @@ Public Sub Init()
     Ellipsoids(i) = New_Ellipsoid(i, "WGS 66                ", 6378145, 0.006694542): i = i + 1
     Ellipsoids(i) = New_Ellipsoid(i, "WGS-72                ", 6378135, 0.006694318): i = i + 1
     Ellipsoids(i) = New_Ellipsoid(i, "WGS-84                ", 6378137, 0.00669438)
-    
+    EllipsoWGS84 = Ellipsoids(i)
 End Sub
 Public Function New_Ellipsoid(aID As Long, aName As String, aEquRadius As Double, aEccSqu As Double) As Ellipsoid
     With New_Ellipsoid

@@ -18,7 +18,7 @@ Private m_Lon    As AngleDec
 Private m_Height As Double
 
 Friend Sub New_(Latitude As AngleDec, Longitude As AngleDec, Optional ByVal Height As Double, Optional ByVal aName As String)
-    Set m_Lat = Latitude: Set m_Lon = Longitude: m_Height = Height: m_Name = aName
+    Set m_Lat = Latitude: Set m_Lon = Longitude:                 m_Height = Height:                 m_Name = aName
 End Sub
 
 'copy to MNew:
