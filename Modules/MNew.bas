@@ -56,7 +56,12 @@ Public Function UTM32G(aGeoPos As GeoPos, elli As Ellipsoid) As UTM32
     Set UTM32G = New UTM32: UTM32G.NewG aGeoPos, elli
 End Function
 
-
+Public Function Action(Obj As Object, ByVal ActionName As String) As Action
+    Set Action = New Action: Action.New_ Obj, ActionName
+End Function
+Public Function Func1(Obj As Object, ByVal FuncName As String) As Func1
+    Set Func1 = New Func1: Func1.New_ Obj, FuncName
+End Function
 Public Function PropLet(Obj As Object, ByVal PropName As String) As PropLet
     Set PropLet = New PropLet: PropLet.New_ Obj, PropName
 End Function

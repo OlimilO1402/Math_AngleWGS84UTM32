@@ -233,7 +233,7 @@ Private m_Angle  As AngleDec
 Private m_Result As VbMsgBoxResult
 Private m_isUpdatingView As Boolean
 Private m_LastTB As TextBox
-Private m_PropA  As PropLet
+Private m_PropA  As Func1 'PropLet
 
 Public Function ShowDialog(aAngle As AngleDec, FOwner As Form) As VbMsgBoxResult
     Set m_Angle = aAngle.Clone
@@ -273,7 +273,8 @@ Private Sub TB_OnLostFocus()
     Dim s As String: s = m_LastTB.Text
     Dim alp
     If MString.Decimal_TryParse(s, alp) Then
-        m_PropA.Invoke = alp
+        'm_PropA.Invoke = alp
+        m_PropA.Invoke alp
     Else
         MsgBox "Failed to parse a numeric value from: " & s
         Exit Sub

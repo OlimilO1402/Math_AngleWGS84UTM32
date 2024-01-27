@@ -19,8 +19,20 @@ Private m_Height As Double
 
 Friend Sub New_(Latitude As AngleDec, Longitude As AngleDec, Optional ByVal Height As Double, Optional ByVal aName As String)
     Set m_Lat = Latitude: Set m_Lon = Longitude:                 m_Height = Height:                 m_Name = aName
+    'Breitengrade
+    'Wendekreis bei 23,5° N/S in between is the tropic
+    'latitudes have a range
+    'from 0° at the equator to 90° north at the northpole and
+    'from 0° at the equator to 90° south at the southpole
+    CheckLat m_Lat, m_Lon
+    
+    'Längengrade oder Meridiane
+    'longitude has a range
+    'from 0° at the Greenwich-line to 179°59'59.99'' east at the international date line (Datumsgrenze) and
+    'from 179°59'59.99'' west to 0° back to the Greenwich-line
+    CheckLon m_Lon
+    
 End Sub
-
 'copy to MNew:
 'Public Function GeoPos(Latitude As AngleDec, Longitude As AngleDec, Optional ByVal Height As Double, Optional ByVal Name As String) As GeoPos
 '    Set GeoPos = New GeoPos: GeoPos.New_ Latitude, Longitude, Height, Name
@@ -28,6 +40,42 @@ End Sub
 'Public Function GeoPosS(s As String) As GeoPos
 '    Set GeoPosS = New GeoPos: GeoPosS.Parse s
 'End Function
+
+Private Sub CheckLat(Latitude As AngleDec, Longitude As AngleDec)
+    Dim latVal: latVal = Latitude.GradF
+    Dim lonVal: lonVal = Longitude.GradF
+    Dim latDir As String: latDir = IIf(latVal < 0, "S", "N")
+    If latVal < 0 Then latVal = CDec(-1) * latVal
+    If latVal > 360 Then latVal = latVal Mod 360
+    If latVal < 90 Then
+        'OK
+    ElseIf latVal < 180 Then
+        latVal = CDec(180) - latVal
+        lonVal = lonVal + 179.999
+    ElseIf latVal < 270 Then
+        latVal = CDec(270) - latVal
+        lonVal = lonVal + 179.999 '180
+    ElseIf latVal < 360 Then
+        latVal = CDec(360) - latVal
+    End If
+    
+    Latitude.GradF = latVal
+    Latitude.Dir = latDir
+    Longitude.GradF = lonVal
+End Sub
+Private Sub CheckLon(Longitude As AngleDec)
+    Dim lonVal: lonVal = Longitude.GradF
+    Dim lonDir As String: lonDir = IIf(lonVal < 0, "W", "E")
+    If lonVal < 0 Then lonVal = CDec(-1) * lonVal
+    If lonVal > 360 Then lonVal = lonVal Mod 360
+    If lonVal < 180 Then
+        'OK
+    ElseIf lonVal < 360 Then
+        lonVal = CDec(360) - lonVal
+    End If
+    Longitude.GradF = lonVal
+    Longitude.Dir = lonDir
+End Sub
 
 Friend Sub NewC(other As GeoPos)
     m_Name = other.Name:     Set m_Lat = other.Latitude.Clone

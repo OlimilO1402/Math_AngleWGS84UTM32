@@ -26,7 +26,7 @@ Begin VB.Form FGeoPos
       Caption         =   "UTM32"
       Height          =   255
       Left            =   1440
-      TabIndex        =   17
+      TabIndex        =   1
       Top             =   120
       Width           =   1095
    End
@@ -34,7 +34,7 @@ Begin VB.Form FGeoPos
       Caption         =   "WGS84"
       Height          =   255
       Left            =   120
-      TabIndex        =   16
+      TabIndex        =   0
       Top             =   120
       Value           =   -1  'True
       Width           =   1095
@@ -53,7 +53,7 @@ Begin VB.Form FGeoPos
       EndProperty
       Height          =   375
       Left            =   1200
-      TabIndex        =   0
+      TabIndex        =   26
       Top             =   3120
       Width           =   1455
    End
@@ -71,7 +71,7 @@ Begin VB.Form FGeoPos
       EndProperty
       Height          =   375
       Left            =   2880
-      TabIndex        =   1
+      TabIndex        =   27
       Top             =   3120
       Width           =   1455
    End
@@ -81,7 +81,7 @@ Begin VB.Form FGeoPos
       Left            =   120
       ScaleHeight     =   2415
       ScaleWidth      =   5295
-      TabIndex        =   2
+      TabIndex        =   28
       Top             =   600
       Width           =   5295
       Begin VB.CommandButton BtnEditLatitude 
@@ -97,7 +97,7 @@ Begin VB.Form FGeoPos
          EndProperty
          Height          =   375
          Left            =   4320
-         TabIndex        =   10
+         TabIndex        =   5
          Top             =   0
          Width           =   975
       End
@@ -121,7 +121,7 @@ Begin VB.Form FGeoPos
       Begin VB.ComboBox CmbNS 
          Height          =   345
          Left            =   1080
-         TabIndex        =   8
+         TabIndex        =   3
          Top             =   0
          Width           =   975
       End
@@ -136,7 +136,7 @@ Begin VB.Form FGeoPos
          Height          =   975
          Left            =   1080
          MultiLine       =   -1  'True
-         TabIndex        =   6
+         TabIndex        =   14
          Top             =   1440
          Width           =   4215
       End
@@ -144,7 +144,7 @@ Begin VB.Form FGeoPos
          Alignment       =   2  'Zentriert
          Height          =   375
          Left            =   2160
-         TabIndex        =   5
+         TabIndex        =   4
          Top             =   0
          Width           =   2055
       End
@@ -152,7 +152,7 @@ Begin VB.Form FGeoPos
          Alignment       =   2  'Zentriert
          Height          =   375
          Left            =   2160
-         TabIndex        =   4
+         TabIndex        =   8
          Top             =   480
          Width           =   2055
       End
@@ -160,7 +160,7 @@ Begin VB.Form FGeoPos
          Alignment       =   2  'Zentriert
          Height          =   375
          Left            =   2160
-         TabIndex        =   3
+         TabIndex        =   11
          Top             =   960
          Width           =   2055
       End
@@ -169,7 +169,7 @@ Begin VB.Form FGeoPos
          Caption         =   "Description:"
          Height          =   225
          Left            =   0
-         TabIndex        =   15
+         TabIndex        =   13
          Top             =   1440
          Width           =   945
       End
@@ -178,7 +178,7 @@ Begin VB.Form FGeoPos
          Caption         =   "Latitude:"
          Height          =   225
          Left            =   0
-         TabIndex        =   14
+         TabIndex        =   2
          Top             =   0
          Width           =   690
       End
@@ -187,7 +187,7 @@ Begin VB.Form FGeoPos
          Caption         =   "Longitude:"
          Height          =   225
          Left            =   0
-         TabIndex        =   13
+         TabIndex        =   6
          Top             =   480
          Width           =   855
       End
@@ -196,7 +196,7 @@ Begin VB.Form FGeoPos
          Caption         =   "Height above sea level:"
          Height          =   345
          Left            =   0
-         TabIndex        =   12
+         TabIndex        =   10
          Top             =   960
          Width           =   1815
       End
@@ -205,7 +205,7 @@ Begin VB.Form FGeoPos
          Caption         =   "[m+NHN]"
          Height          =   225
          Left            =   4320
-         TabIndex        =   11
+         TabIndex        =   12
          Top             =   960
          Width           =   810
       End
@@ -216,14 +216,14 @@ Begin VB.Form FGeoPos
       Left            =   120
       ScaleHeight     =   2415
       ScaleWidth      =   5295
-      TabIndex        =   18
+      TabIndex        =   29
       Top             =   600
       Width           =   5295
       Begin VB.TextBox TxtUTMZone 
          Alignment       =   2  'Zentriert
          Height          =   375
          Left            =   0
-         TabIndex        =   29
+         TabIndex        =   16
          Top             =   360
          Width           =   1215
       End
@@ -231,7 +231,7 @@ Begin VB.Form FGeoPos
          Alignment       =   2  'Zentriert
          Height          =   375
          Left            =   2160
-         TabIndex        =   25
+         TabIndex        =   22
          Top             =   960
          Width           =   2055
       End
@@ -239,7 +239,7 @@ Begin VB.Form FGeoPos
          Alignment       =   2  'Zentriert
          Height          =   375
          Left            =   2160
-         TabIndex        =   21
+         TabIndex        =   18
          Top             =   0
          Width           =   3135
       End
@@ -255,7 +255,7 @@ Begin VB.Form FGeoPos
          Height          =   975
          Left            =   1080
          MultiLine       =   -1  'True
-         TabIndex        =   19
+         TabIndex        =   25
          Top             =   1440
          Width           =   4215
       End
@@ -264,7 +264,7 @@ Begin VB.Form FGeoPos
          Caption         =   "UTM Zone:"
          Height          =   225
          Left            =   0
-         TabIndex        =   28
+         TabIndex        =   15
          Top             =   0
          Width           =   870
       End
@@ -273,7 +273,7 @@ Begin VB.Form FGeoPos
          Caption         =   "[m+NHN]"
          Height          =   225
          Left            =   4320
-         TabIndex        =   27
+         TabIndex        =   23
          Top             =   960
          Width           =   810
       End
@@ -282,7 +282,7 @@ Begin VB.Form FGeoPos
          Caption         =   "Height above sea level:"
          Height          =   345
          Left            =   0
-         TabIndex        =   26
+         TabIndex        =   21
          Top             =   960
          Width           =   1815
       End
@@ -291,7 +291,7 @@ Begin VB.Form FGeoPos
          Caption         =   "Easting:"
          Height          =   225
          Left            =   1320
-         TabIndex        =   24
+         TabIndex        =   17
          Top             =   0
          Width           =   615
       End
@@ -300,7 +300,7 @@ Begin VB.Form FGeoPos
          Caption         =   "Northing:"
          Height          =   225
          Left            =   1320
-         TabIndex        =   23
+         TabIndex        =   19
          Top             =   480
          Width           =   765
       End
@@ -309,7 +309,7 @@ Begin VB.Form FGeoPos
          Caption         =   "Description:"
          Height          =   225
          Left            =   0
-         TabIndex        =   22
+         TabIndex        =   24
          Top             =   1440
          Width           =   945
       End
@@ -329,17 +329,53 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 'Modal Dialog
-Private m_GeoPos As GeoPos
-Private m_Result As VbMsgBoxResult
 Private m_FOwner As Form
-Private m_ShowWGS84 As Boolean
+Private m_GeoPos As GeoPos
 Private m_UTMGps As UTM32
+Private m_Result As VbMsgBoxResult
+
+Private m_isUpdatingView As Boolean
+Private m_LastTB    As TextBox
+Private mPropA      As Func1
+Private mUpdateData As Func1
+
+'the following problem arises:
+'in TextBox_LostFocus we take the given value, we have to parse and validate it
+'when user hits Return the Button ok is activated before the last LostFocus
+'so the last value never gets taken
+'the solution now is: we have to take all values again in OK-click
+'but this is not very satisfying
+'we could do better
+'we have to store the last textbox in gotfocus
+'and in ok-click we parse only the last value
+
+'OK was haben wir
+'
+'auf der Seite WGS84 haben wir:
+' * Latitude:
+'   - ComboBox: muss ma nix weiter machen
+'   - TextBox:  die Function GeoPos.Latitude.Parse mit Parameter TextBox.Text aufrufen        -> a
+' * Longitude:
+'   - ComboBox: muss ma nix weiter machen
+'   - TextBox:  die Function GeoPos.Longitude.Parse mit Parameter TextBox.Text aufrufen       -> a
+' * TextBox: die Höhe erst als Double parsen dann als PropLet übernehmen                      -> b
+' * TextBox: die Beschreibung als PropLet übernehmen                                          -> c
+'
+'auf der Seite UTM32 haben wir:
+' * TextBox: UTMZone als PropLet As String an UTM32.UTMZone übergeben                         -> c
+' * TextBox: Easting  As Double parsen dann als PropLet As String an Prop Easting übergeben   -> b
+' * TextBox: Northing As double parsen dann als PropLet As String an Prop Northing übergeben  -> b
+' * TextBox: die Höhe erst als Double parsen dann als PropLet übernehmen                      -> b
+' * TextBox: die Beschreibung als PropLet übernehmen                                          -> c
+
+'-> wir haben drei verschiedene Arten Daten zu übernehmen
+' a) String von TextBox an obj-Function übergeben z.b. Parse
+' b) String von TextBox nach double parsen Fehler ausgeben und an PropLet übergeben
+' c) String von TextBox direkt an PropLet übergeben
 
 Private Sub Form_Load()
-    m_ShowWGS84 = True
     AddEW Me.CmbEW
     AddNS Me.CmbNS
-    'ToggleView
 End Sub
 
 Private Sub AddEW(Cmb As ComboBox)
@@ -368,16 +404,26 @@ Private Sub OptUTM32_Click()
     ToggleView
 End Sub
 Private Sub ToggleView()
-    If mnuOptConvert.Checked Then UpdateData
-    m_ShowWGS84 = Not m_ShowWGS84
-    If m_ShowWGS84 Then PnlWGS84.ZOrder 0 Else PnlUTM32.ZOrder 0
+    If mnuOptConvert.Checked Then
+        Convert
+    End If
+    PnlWGS84.ZOrder IIf(OptWGS84.Value, 0, 1)
     If Not m_GeoPos Is Nothing Then
         UpdateView
     End If
 End Sub
 
+Private Sub Convert()
+    If OptWGS84.Value Then
+        Set m_GeoPos = m_UTMGps.ToWGS84(MUTM.EllipsoWGS84)
+    Else
+        Set m_UTMGps = m_GeoPos.ToUTM32(MUTM.EllipsoWGS84)
+    End If
+End Sub
+
 Private Sub UpdateView()
-    If m_ShowWGS84 Then
+    m_isUpdatingView = True
+    If OptWGS84.Value Then
         CmbNS.Text = m_GeoPos.Latitude.Dir
         CmbEW.Text = m_GeoPos.Longitude.Dir
         TxtLatitude.Text = m_GeoPos.Latitude.ToStr_DMS
@@ -385,47 +431,75 @@ Private Sub UpdateView()
         TxtNHN.Text = m_GeoPos.Height
         TxtDescription.Text = m_GeoPos.Name
     Else
-        'If m_UTMGps Is Nothing Then
-        '    Set m_UTMGps = m_GeoPos.ToUTM32(MUTM.EllipsoWGS84)
-        'End If
-        TxtNorthing.Text = m_UTMGps.Northing
+        TxtUTMZone.Text = m_UTMGps.Zone
         TxtEasting.Text = m_UTMGps.Easting
-        TxtUTMZone.Text = m_UTMGps.Zone 'Str
-        
+        TxtNorthing.Text = m_UTMGps.Northing
         TxtNHNUTM32.Text = m_UTMGps.Height
         TxtDescriptionUTM32.Text = m_UTMGps.Name
     End If
+    m_isUpdatingView = False
 End Sub
 
-Private Sub UpdateData()
-    If m_ShowWGS84 Then
-        m_GeoPos.Latitude.Dir = Left(CmbNS.Text, 1)
-        m_GeoPos.Longitude.Dir = Left(CmbEW.Text, 1)
+Private Function UpdateData() As Boolean
+    If m_isUpdatingView Then Exit Function
+    Dim d
+    If OptWGS84.Value Then
+        
+        m_GeoPos.Latitude.Dir = CmbNS.Text
+        m_GeoPos.Longitude.Dir = CmbEW.Text
+        
+        UpdateData = AngleParse(m_GeoPos.Latitude, TxtLatitude.Text)
+        If Not UpdateData Then Exit Function
+        
+        UpdateData = AngleParse(m_GeoPos.Longitude, TxtLongitude.Text)
+        If Not UpdateData Then Exit Function
+        
+        UpdateData = FloatParse(TxtNHN.Text, d)
+        If Not UpdateData Then Exit Function
+        m_GeoPos.Height = d
+        
         m_GeoPos.Name = TxtDescription.Text
-        m_GeoPos.Latitude.Parse TxtLatitude.Text
-        m_GeoPos.Longitude.Parse TxtLongitude.Text
-        Dim H As Double
-        If Not Double_TryParse(TxtNHN.Text, H) Then Exit Sub
-        m_GeoPos.Height = H
-        If mnuOptConvert.Checked Then
-            'Dim u As UTM32: Set u = m_GeoPos.ToUTM32
-            'm_UTMGps.NewC u
-            Set m_UTMGps = m_GeoPos.ToUTM32(MUTM.EllipsoWGS84)
-        End If
     Else
-        'Dim n As Double
-        'If Not CheckParse(TxtNorthing.Text, n) Then Exit Sub
-        'Dim e As Double
-        'If Not CheckParse(TxtEasting.Text, e) Then Exit Sub
-        'Set m_UTMGps = MNew.UTM32(n, e, TxtUTMZone.Text)
-        If mnuOptConvert.Checked Then
-            Set m_GeoPos = m_UTMGps.ToWGS84(MUTM.EllipsoWGS84)
-        End If
+        m_UTMGps.Zone = TxtUTMZone.Text
+        
+        UpdateData = FloatParse(TxtEasting.Text, d)
+        If Not UpdateData Then Exit Function
+        m_UTMGps.Easting = d
+        
+        UpdateData = FloatParse(TxtNorthing.Text, d)
+        If Not UpdateData Then Exit Function
+        m_UTMGps.Northing = d
+        
+        UpdateData = FloatParse(TxtNHNUTM32.Text, d)
+        If Not UpdateData Then Exit Function
+        m_UTMGps.Height = d
+        
+        m_UTMGps.Name = TxtDescriptionUTM32.Text
     End If
-End Sub
+'    If mnuOptConvert.Checked Then
+'        If OptWGS84.Value Then
+'            Set m_UTMGps = m_GeoPos.ToUTM32(MUTM.EllipsoWGS84)
+'        Else
+'            Set m_GeoPos = m_UTMGps.ToWGS84(MUTM.EllipsoWGS84)
+'        End If
+'    End If
+End Function
+
+Private Function AngleParse(a As AngleDec, s As String) As Boolean
+    AngleParse = a.Parse(s)
+    If Not AngleParse Then MsgBox "Could not parse: " & vbCrLf & s
+End Function
+
+Private Function FloatParse(s As String, d_out) As Boolean
+    FloatParse = MString.Decimal_TryParse(s, d_out)
+    If Not FloatParse Then MsgBox "Could not parse convert the value to a float: " & s
+End Function
 
 Private Sub BtnOK_Click()
-    UpdateData
+    If Not UpdateData Then
+        UpdateView
+        Exit Sub
+    End If
     m_Result = vbOK:     Unload Me
 End Sub
 
@@ -433,6 +507,28 @@ Private Sub BtnCancel_Click()
     m_Result = vbCancel: Unload Me
 End Sub
 
+Private Sub mnuOptConvert_Click()
+    mnuOptConvert.Checked = Not mnuOptConvert.Checked
+End Sub
+
+
+'WGS84
+Private Sub CmbNS_Click()
+    m_GeoPos.Latitude.Dir = Left(CmbNS.Text, 1)
+    UpdateView
+End Sub
+Private Sub CmbEW_Click()
+    m_GeoPos.Longitude.Dir = Left(CmbEW.Text, 1)
+    UpdateView
+End Sub
+
+Private Sub TxtLatitude_GotFocus()
+    Set m_LastTB = TxtLatitude:       Set mPropA = MNew.Func1(m_GeoPos.Latitude, "Parse")
+End Sub
+Private Sub TxtLatitude_LostFocus()
+    Call AngleParse(m_GeoPos.Latitude, TxtLatitude.Text)
+    UpdateView
+End Sub
 Private Sub BtnEditLatitude_Click()
     FAngle.Move Me.Left + BtnEditLatitude.Left, Me.Top + BtnEditLatitude.Top
     If FAngle.ShowDialog(m_GeoPos.Latitude, m_FOwner) Then
@@ -440,38 +536,23 @@ Private Sub BtnEditLatitude_Click()
     End If
 End Sub
 
+Private Sub TxtLongitude_GotFocus()
+    Set m_LastTB = TxtLongitude:       Set mPropA = MNew.PropLet(m_GeoPos.Longitude, "Parse")
+End Sub
+Private Sub TxtLongitude_LostFocus()
+    Call AngleParse(m_GeoPos.Longitude, TxtLongitude.Text)
+    UpdateView
+End Sub
 Private Sub BtnEditLongitude_Click()
     FAngle.Move Me.Left + BtnEditLongitude.Left, Me.Top + BtnEditLongitude.Top
     If FAngle.ShowDialog(m_GeoPos.Longitude, m_FOwner) Then
         UpdateView
     End If
 End Sub
-
-Private Sub CmbNS_Click()
-    m_GeoPos.Latitude.Dir = Left(CmbNS.Text, 1)
-    UpdateView
-End Sub
-
-Private Sub CmbEW_Click()
-    m_GeoPos.Longitude.Dir = Left(CmbEW.Text, 1)
-    UpdateView
-End Sub
-
-Private Sub mnuOptConvert_Click()
-    mnuOptConvert.Checked = Not mnuOptConvert.Checked
-End Sub
-Private Sub TxtLatitude_LostFocus()
-    m_GeoPos.Latitude.Parse TxtLatitude.Text
-    UpdateView
-End Sub
-Private Sub TxtLongitude_LostFocus()
-    m_GeoPos.Longitude.Parse TxtLongitude.Text
-    UpdateView
-End Sub
 Private Sub TxtNHN_LostFocus()
-    Dim H As Double
-    If Not Double_TryParse(TxtNHN.Text, H) Then Exit Sub
-    m_GeoPos.Height = H
+    Dim d As Double
+    If Not CheckParse(TxtNHN.Text, d) Then Exit Sub
+    m_GeoPos.Height = d
     UpdateView
 End Sub
 Private Sub TxtDescription_LostFocus()
@@ -479,7 +560,7 @@ Private Sub TxtDescription_LostFocus()
     UpdateView
 End Sub
 
-
+'UTM32
 Private Sub TxtNorthing_LostFocus()
     Dim d As Double
     If Not CheckParse(TxtNorthing.Text, d) Then Exit Sub
@@ -502,14 +583,78 @@ Private Sub TxtNHNUTM32_LostFocus()
     m_UTMGps.Height = d
     UpdateView
 End Sub
+
+Private Sub TxtDescriptionUTM32_GotFocus()
+    Set m_LastTB = TxtDescriptionUTM32:   Set mPropA = MNew.PropLet(m_UTMGps, "Name")
+End Sub
 Private Sub TxtDescriptionUTM32_LostFocus()
     m_UTMGps.Name = TxtDescriptionUTM32.Text
+    UpdateView
 End Sub
 
 Private Function CheckParse(s As String, d_out As Double) As Boolean
-    CheckParse = Double_TryParse(s, d_out)
+    If IsNumeric(s) Then
+        CheckParse = Double_TryParse(s, d_out)
+    End If
     If Not CheckParse Then
         MsgBox "Could not parse the value: " & s & vbCrLf & "Please give a valid number"
     End If
 End Function
 
+
+'Private Sub TxtAngleRad_GotFocus()
+'    Set m_LastTB = TxtAngleRad:       Set m_PropA = MNew.PropLet(m_Angle, "Value")
+'End Sub
+'Private Sub TxtAngleRad_LostFocus()
+'    TB_OnLostFocus
+'End Sub
+
+'Private Sub TB_OnLostFocus()
+'    If m_isUpdatingView Then Exit Sub
+'    Dim s As String: s = m_LastTB.Text
+'    'Dim v
+'    'If MString.Decimal_TryParse(s, v) Then
+'        Call m_PropA.Invoke(s)
+'    'Else
+'    '    MsgBox "Failed to parse a numeric value from: " & s
+'    '    Exit Sub
+'    'End If
+'    UpdateView
+'End Sub
+
+
+' a) String von TextBox an obj-Function übergeben z.b. Parse
+' b) String von TextBox nach double parsen Fehler ausgeben und an PropLet übergeben
+' c) String von TextBox direkt an PropLet übergeben
+
+Public Function OnAngleParse() As Boolean
+    If m_isUpdatingView Then Exit Function
+    Dim s As String: s = m_LastTB.Text
+    OnAngleParse = mPropA.Invoke(s)
+    If Not OnAngleParse Then
+        MsgBox "Could not parse angle: " & s
+    End If
+    'UpdateView
+End Function
+
+Public Function OnFloatParse() As Boolean
+    If m_isUpdatingView Then Exit Function
+    Dim s As String: s = m_LastTB.Text
+    Dim v
+    OnFloatParse = MString.Decimal_TryParse(s, v)
+    If OnFloatParse Then
+        Call mPropA.Invoke(s)
+    Else
+        MsgBox "Failed to parse the value: " & s
+        Exit Function
+    End If
+    'UpdateView
+End Function
+
+Public Function OnStringPropLet() As Boolean
+    If m_isUpdatingView Then Exit Function
+    Dim s As String: s = m_LastTB.Text
+    Call mPropA.Invoke(s)
+    OnStringPropLet = True
+    'UpdateView
+End Function

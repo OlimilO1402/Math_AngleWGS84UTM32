@@ -202,6 +202,38 @@ Private m_Trip         As Collection 'Of GeoPos
 Private m_pfnKml       As String 'pathfilename of kml-file
 'https://earth.google.com/web
 
+Private Sub Command1_Click()
+    Dim lat As Angle: Set lat = MNew.AngleDecD(72)
+    Dim lon As Angle: Set lon = MNew.AngleDecD(0)
+    Dim gps As GeoPos
+    
+    'Set gps = MNew.GeoPos(lat, lon, 123, "Test")
+    'StartKoUmre gps
+    
+    lat.AddDeg 90
+    lon.AddDeg 0 '180
+    Set gps = MNew.GeoPos(lat, lon, 123, "Test")
+    StartGEarth gps
+    
+End Sub
+
+Private Sub LBFamousPlaces_KeyUp(KeyCode As Integer, Shift As Integer)
+    ProcessKeyUp KeyCode, Shift
+End Sub
+
+Private Sub ProcessKeyUp(ByVal KeyCode As Integer, ByVal Shift As Integer)
+    Select Case True
+    Case IsStrg(KeyCode, Shift, "X"): mnuGeoPosCut_Click
+    Case IsStrg(KeyCode, Shift, "C"): mnuGeoPosCopy_Click
+    Case IsStrg(KeyCode, Shift, "V"): mnuGeoPosPaste_Click
+    End Select
+End Sub
+Private Function IsStrg(ByVal KeyCode As Integer, ByVal Shift As Integer, ByVal Key As String) As Boolean
+    Dim ck As String: ck = ChrW(KeyCode)
+    If ck <> UCase(Key) And ck <> LCase(Key) Then Exit Function
+    IsStrg = Shift And ShiftConstants.vbCtrlMask
+End Function
+
 'Wishes:
 ' * do file operations with class PathFileName get the
 '   chance to call the default program for html-files
@@ -230,6 +262,10 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As 
     End If
 End Sub
 
+Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
+    ProcessKeyUp KeyCode, Shift
+End Sub
+
 Private Sub Form_Unload(Cancel As Integer)
     If FileExists(m_pfnKml) Then Kill m_pfnKml
 End Sub
@@ -251,6 +287,28 @@ End Sub
 Private Sub AddPlaces()
     Set m_FamousPlaces = New Collection
     With m_FamousPlaces
+        'Tests
+        '.Add MNew.GeoPos(MNew.AngleDecS("N 0° 0' 0,1"""), MNew.AngleDecS("O 0° 0' 0,1"""), 100, "N0-E0 equator-atlantic")       'Äquator-Atlantic
+        '.Add MNew.GeoPos(MNew.AngleDecS("N 0° 0' 0,1"""), MNew.AngleDecS("W -0° 0' 0,1"""), 100, "N0-W0 equator-atlantic")      'Äquator-Atlantic
+        '.Add MNew.GeoPos(MNew.AngleDecS("S -0° 0' 0,1"""), MNew.AngleDecS("O 0° 0' 0,1"""), 100, "S0-E0 equator-atlantic")      'Äquator-Atlantic
+        '.Add MNew.GeoPos(MNew.AngleDecS("S -0° 0' 0,1"""), MNew.AngleDecS("W -0° 0' 0,1"""), 100, "S0-W0 equator-atlantic")     'Äquator-Atlantic
+        '
+        '.Add MNew.GeoPos(MNew.AngleDecS("N 0° 0' 0,1"""), MNew.AngleDecS("O 179° 0' 0,0"""), 100, "N0-E179 equator-pacific")    'Äquator-Pazifik
+        '.Add MNew.GeoPos(MNew.AngleDecS("N 0° 0' 0,1"""), MNew.AngleDecS("W -179° 0' 0,0"""), 100, "N0-W179 equator-pacific")   'Äquator-Pazifik
+        '.Add MNew.GeoPos(MNew.AngleDecS("S -0° 0' 0,1"""), MNew.AngleDecS("O 179° 0' 0,0"""), 100, "S0-E179 equator-pacific")   'Äquator-Pazifik
+        '.Add MNew.GeoPos(MNew.AngleDecS("S -0° 0' 0,1"""), MNew.AngleDecS("W -179° 0' 0,0"""), 100, "S0-W179 equator-pacific")  'Äquator-Pazifik
+        '
+        '.Add MNew.GeoPos(MNew.AngleDecS("N 89° 0' 0,0"""), MNew.AngleDecS("O 0° 0' 0,1"""), 100, "N90-E0 northpole")            'Nordpol
+        '.Add MNew.GeoPos(MNew.AngleDecS("N 89° 0' 0,0"""), MNew.AngleDecS("W -0° 0' 0,1"""), 100, "N90-W0 northpole")           'Nordpol
+        '.Add MNew.GeoPos(MNew.AngleDecS("S -89° 0' 0,0"""), MNew.AngleDecS("O 0° 0' 0,1"""), 100, "S90-E0 southpole")           'Südpol
+        '.Add MNew.GeoPos(MNew.AngleDecS("S -89° 0' 0,0"""), MNew.AngleDecS("W -0° 0' 0,1"""), 100, "S90-W0 southpole")     'Südpol
+        '
+        '.Add MNew.GeoPos(MNew.AngleDecS("N 89° 0' 0,0"""), MNew.AngleDecS("O 179° 0' 0,0"""), 100, "N90-E179 northpole")   'Nordpol
+        '.Add MNew.GeoPos(MNew.AngleDecS("N 89° 0' 0,0"""), MNew.AngleDecS("W -179° 0' 0,0"""), 100, "N90-W179 northpole")  'Nordpol
+        '.Add MNew.GeoPos(MNew.AngleDecS("S -89° 0' 0,0"""), MNew.AngleDecS("O 179° 0' 0,0"""), 100, "S90-E179 southpole")  'Südpol
+        '.Add MNew.GeoPos(MNew.AngleDecS("S -89° 0' 0,0"""), MNew.AngleDecS("W -179° 0' 0,0"""), 100, "S90-W179 southpole") 'Südpol
+        
+        
         .Add MNew.GeoPos(MNew.AngleDecS("N 52° 30' 35,31"""), MNew.AngleDecS("O 13° 22' 32,41"""), 34, "Berlin, Potsdamer Platz")
         .Add MNew.GeoPos(MNew.AngleDecS("N 48° 51' 29,69"""), MNew.AngleDecS("O 02° 17' 40,38"""), 216, "Paris, Eiffelturm")
         .Add MNew.GeoPos(MNew.AngleDecS("N 51° 30' 02,48"""), MNew.AngleDecS("W 00° 07' 28,53"""), 85, "London, Big Ben")
@@ -290,11 +348,13 @@ End Sub
 
 Sub UpdateView()
     With LBFamousPlaces
+        Dim i As Long: i = .ListIndex
         .Clear
         Dim gps As GeoPos
         For Each gps In m_FamousPlaces
             .AddItem gps.ToStr
         Next
+        If i Then .ListIndex = i 'Selected(i) = True
     End With
 End Sub
 
@@ -514,36 +574,63 @@ Private Sub mnuStartKoUmre_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
     Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
-    Dim cmd As String: cmd = """" & pfnFF & """" & " " & """" & gps.ToKoUmrLink & """"
-    Shell cmd, vbNormalFocus
+    StartKoUmre gps
 End Sub
 
 Private Sub mnuStartGEarth_Click()
+Try: On Error GoTo Catch
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
     Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
-    Dim cmd As String
-    If Not mnuOptStartGEWeb.Checked Then
-        If FileExists(pfnGE) Then
-            If FileExists(m_pfnKml) Then Kill m_pfnKml
-            If SaveFile(m_pfnKml, gps.ToStrKml) Then
-                'maybe here edit the path to your Google Earth installation
-                cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
-                Shell cmd, vbNormalFocus
-            Else
-                MsgBox "Could not write kmlfile: " & vbCrLf & m_pfnKml
-            End If
-            Exit Sub
-        End If
+    If mnuOptStartGEWeb.Checked Then
+        StartGEWeb gps
+    Else
+        StartGEarth gps
     End If
+    Exit Sub
+Catch:
+    MsgBox "Could not start google earth, maybe googleearth.exe or firefox.exe not found"
+End Sub
+
+Private Sub StartKoUmre(gps As GeoPos)
 Try: On Error GoTo Catch
-    'https://earth.google.com/web/@48.01091401,10.61795265,624.60371552a,100.07091926d,35y,0h,0t,0r
-    cmd = """" & pfnFF & """" & " " & """" & MMain.GEWeb & gps.ToGEWeb & """"
+    Dim cmd As String: cmd = """" & pfnFF & """" & " " & """" & gps.ToKoUmrLink & """"
+    Shell cmd, vbNormalFocus
+    Exit Sub
+Catch:
+    MsgBox "Could not start your webbrowser, maybe edge, chrome, firefox what have your, not found"
+End Sub
+
+Private Sub StartGEarth(gps As GeoPos)
+Try: On Error GoTo Catch
+    If Not FileExists(pfnGE) Then
+        MsgBox "Path to Google Earth Pro not found" & vbCrLf & pfnGE
+        Exit Sub
+    End If
+    If FileExists(m_pfnKml) Then
+        Kill m_pfnKml
+    End If
+    If Not SaveFile(m_pfnKml, gps.ToStrKml) Then
+        MsgBox "Could not write kmlfile: " & vbCrLf & m_pfnKml
+        Exit Sub
+    End If
+    'maybe here edit the path to your Google Earth installation
+    Dim cmd As String: cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
+    Shell cmd, vbNormalFocus
+    Exit Sub
+Catch:
+    MsgBox "Errors during start of Google Earth Pro"
+End Sub
+
+Private Sub StartGEWeb(gps As GeoPos)
+Try: On Error GoTo Catch
+    Dim cmd As String: cmd = """" & pfnFF & """" & " " & """" & MMain.GEWeb & gps.ToGEWeb & """"
     Shell cmd, vbNormalFocus
     Exit Sub
 Catch:
     MsgBox "Could not start google earth, maybe googleearth.exe or firefox.exe not found"
 End Sub
+
 Private Sub mnuAddToTrip_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub

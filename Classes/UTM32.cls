@@ -12,6 +12,10 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+'Universal Transverse Mercator
+'https://de.wikipedia.org/wiki/UTM-Koordinatensystem
+'https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system
+'For example, the CN Tower is at 43°38'33.24"N 79°23'13.7"W, which is in UTM zone 17, and the grid position is 630084 m east, 4833438 m north.
 Private m_Name As String
 Private m_Northing As Double
 Private m_Easting  As Double
@@ -65,13 +69,26 @@ End Property
 Public Property Get ZoneStr() As String
     ZoneStr = m_ZoneStr
 End Property
+
 Public Property Let Zone(ByVal Value As String)
-    m_ZoneNum = StrToUL(Trim(Value), m_ZoneStr)
+    If Len(Value) Then
+        m_ZoneNum = StrToUL(Trim(Value), m_ZoneStr)
+    Else
+        m_ZoneStr = "C"
+        m_ZoneNum = 1
+    End If
+End Property
+Public Property Get Zone() As String
+    Zone = CStr(m_ZoneNum) & m_ZoneStr 'm_UTMZone
 End Property
 
-
 Private Function StrToUL(ByVal Value As String, sRest_out As String) As Long
-    Dim State As Integer, i As Long, ch As String, ac As Integer, l As Long: l = Len(Value)
+    Dim l As Long: l = Len(Value)
+    If l = 0 Then
+        Value = "01C"
+        l = 3
+    End If
+    Dim State As Integer, i As Long, ch As String, ac As Integer
     Dim zs As String, zi As Integer ': zi = -1
     Do
         i = i + 1
@@ -103,10 +120,6 @@ Private Function StrToUL(ByVal Value As String, sRest_out As String) As Long
     sRest_out = zs
 End Function
 
-Public Property Get Zone() As String
-    Zone = CStr(m_ZoneNum) & m_ZoneStr 'm_UTMZone
-End Property
-
 Public Property Let Height(ByVal Value As Double)
     m_Height = Value
 End Property
@@ -130,11 +143,9 @@ Friend Function ToWGS84(elli As Ellipsoid) As GeoPos
     'LLtoUTM elli.EquatorialRadius, elli.eccentricitySquared, lat, lon
     UTMtoLL elli.EquatorialRadius, elli.eccentricitySquared, m_Northing, m_Easting, Me.Zone, lat, lon
     'Set ToWGS84 = New GeoPos: ToWGS84.New_ MNew.AngleD(lat), MNew.AngleD(lon), m_Height, m_Name
-    Dim ALat As AngleDec: Set ALat = MNew.AngleDecD(lat)
-    ALat.Dir = IIf(lat < 0, "S", "N")
-    Dim ALon As AngleDec: Set ALon = MNew.AngleDecD(lon)
-    ALon.Dir = IIf(lat < 0, "W", "E")
-    Set ToWGS84 = MNew.GeoPos(ALat, ALon, m_Height, m_Name)
+    'Dim ALat As AngleDec: Set ALat = MNew.AngleDecD(lat)
+    'Dim ALon As AngleDec: Set ALon = MNew.AngleDecD(lon)
+    Set ToWGS84 = MNew.GeoPos(MNew.AngleDecD(lat), MNew.AngleDecD(lon), m_Height, m_Name)
 End Function
 
 Private Sub LLtoUTM(ByVal ERadius As Double, ByVal eccs As Double, ByVal LatGrad As Double, ByVal LonGrad As Double)
@@ -224,6 +235,7 @@ Private Sub UTMtoLL(ByVal ERadius As Double, ByVal eccs As Double, ByVal UTMNort
     Dim ZoneNumber As Long:  ZoneNumber = StrToUL(UTMZone, ZoneLetter)
     m_ZoneNum = ZoneNumber
     m_ZoneStr = ZoneLetter
+    If Len(ZoneLetter) = 0 Then Exit Sub
     
     Dim NorthernHemisphere As Long '//1 for northern hemispher, 0 for southern
     If ((Asc(ZoneLetter) - Asc("N")) >= 0) Then

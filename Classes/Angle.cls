@@ -64,7 +64,7 @@ Public Function Parse(s As String) As Boolean
     '48d45'22.123"
     '48°45'22.123''
     Dim deg As Double, Min As Double, sec As Double
-    Dim i As Long, State As Long, N As Double: N = 1
+    Dim i As Long, State As Long, n As Double: n = 1
     Dim nenn As Double
     Dim lens As Long: lens = Len(s)
     Dim DirFakt As Double: DirFakt = 1
@@ -75,19 +75,19 @@ Public Function Parse(s As String) As Boolean
         Dim ac As Integer: ac = AscW(ch)
         Select Case State
         Case 0
-            If ac = 45 Then
+            If ac = 45 Then                   '- minus, negatives vorzeichen
                 DirFakt = -1
-            ElseIf 48 <= ac And ac <= 57 Then 'die Ziffern von Grad (degree)
+            ElseIf 48 <= ac And ac <= 57 Then '0-9 die Ziffern von Grad (degree)
                 deg = deg * 10# + ac - 48
-            ElseIf ac = 44 Or ac = 46 Then    'Dezimalpunkt oder Dezimalkomma
+            ElseIf ac = 44 Or ac = 46 Then    '. , Dezimalpunkt oder Dezimalkomma
                 State = 1
-            ElseIf ac = 100 Or ac = 176 Then  'das Grad Zeichen "°" oder "d" für degree
+            ElseIf ac = 100 Or ac = 176 Then  '° das Grad Zeichen "°" oder "d" für degree
                 State = 2
-            ElseIf ac = 32 Then               'Leerzeichen ignorieren
+            ElseIf ac = 32 Then               '" " Leerzeichen ignorieren
             ElseIf ac = 112 Or ac = 80 Then   'p oder P d.h. alles bis dahin ist ein Faktor von Pi
                 deg = deg * 180
                 Exit Do
-            ElseIf ac = 47 Then
+            ElseIf ac = 47 Then               ' /
                 State = 7
             ElseIf ac = 69 Or ac = 78 Or ac = 79 Or ac = 83 Or ac = 87 Then
                 '      "E"        "N"        "O"        "S"        "W"
@@ -101,11 +101,11 @@ Public Function Parse(s As String) As Boolean
             End If
         Case 1
             If 48 <= ac And ac <= 57 Then     'die Nachkommastellen von Grad
-                N = N * 10#
-                deg = deg + (ac - 48) / N
-            ElseIf ac = 100 Or ac = 176 Then  'das Grad Zeichen "°" oder "d" für degree
+                n = n * 10#
+                deg = deg + (ac - 48) / n
+            ElseIf ac = 100 Or ac = 176 Then  '0-9 das Grad Zeichen "°" oder "d" für degree
                 State = 2
-                N = 1
+                n = 1
             ElseIf ac = 112 Or ac = 80 Then   'p oder P d.h. alles bis dahin ist ein Faktor von Pi
                 deg = deg * 180
                 Exit Do
@@ -114,26 +114,26 @@ Public Function Parse(s As String) As Boolean
                 State = 6
             End If
         Case 2
-            If 48 <= ac And ac <= 57 Then     'die Ziffern von Minuten
+            If 48 <= ac And ac <= 57 Then     '0-9 die Ziffern von Minuten
                 Min = Min * 10 + ac - 48
-            ElseIf ac = 44 Or ac = 46 Then    'Dezimalpunkt oder Dezimalkomma
+            ElseIf ac = 44 Or ac = 46 Then    '., Dezimalpunkt oder Dezimalkomma
                 State = 3
-                N = 1
-            ElseIf ac = 39 Then               'das Minuten Zeichen " ' "
+                n = 1
+            ElseIf ac = 39 Then               ' ' das Minuten Zeichen " ' "
                 State = 4
-            ElseIf ac = 32 Then               'Leerzeichen ignorieren
+            ElseIf ac = 32 Then               '" " Leerzeichen ignorieren
             Else
                 Exit Do
                 'state = 6
             End If
         Case 3
-            If 48 <= ac And ac <= 57 Then     'die Nachkommastellen von Minuten
-                N = N * 10#
-                Min = Min + (ac - 48) / N
-            ElseIf ac = 39 Then               'das Minuten Zeichen " ' "
+            If 48 <= ac And ac <= 57 Then     '0-9 die Nachkommastellen von Minuten
+                n = n * 10#
+                Min = Min + (ac - 48) / n
+            ElseIf ac = 39 Then               '" das Minuten Zeichen " ' "
                 State = 4
-                N = 1
-            ElseIf ac = 32 Then               'Leerzeichen ignorieren
+                n = 1
+            ElseIf ac = 32 Then               '" " Leerzeichen ignorieren
             Else
                 State = 6
             End If
@@ -150,8 +150,8 @@ Public Function Parse(s As String) As Boolean
             End If
         Case 5
             If 48 <= ac And ac <= 57 Then     'die Nachkommastellen von Sekunden
-                N = N * 10#
-                sec = sec + (ac - 48) / N
+                n = n * 10#
+                sec = sec + (ac - 48) / n
             ElseIf ac = 34 Or ac = 39 Then    'das Sekunden Zeichen "''" oder """" fertig raus
                 Exit Do
             ElseIf ac = 32 Then               'Leerzeichen ignorieren
