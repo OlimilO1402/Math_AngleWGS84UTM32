@@ -86,6 +86,14 @@ Friend Function Clone() As GeoPos
     Set Clone = New GeoPos: Clone.NewC Me
 End Function
 
+Public Function IsEqual(other As GeoPos) As Boolean
+    If Not Me.Latitude.IsEqual(other.Latitude) Then Exit Function
+    If Not Me.Longitude.IsEqual(other.Longitude) Then Exit Function
+    If Me.Name <> other.Name Then Exit Function
+    If Me.Height <> other.Height Then Exit Function
+    IsEqual = True
+End Function
+
 Public Property Get Latitude() As AngleDec
     Set Latitude = m_Lat
 End Property
@@ -107,24 +115,128 @@ Public Property Get Name() As String
     Name = m_Name
 End Property
 
-Public Sub Parse(s As String)
+'MB-Baustatik
+'[Geodat]
+'  GB = 48.18885
+'  GL = 10.98411
+Public Function Parse(ByVal s As String) As Boolean
+Try: On Error GoTo Catch
+    s = Trim(s)
+    If Len(s) = 0 Then Exit Function
+    If IsMBBaustatikFormat(s) Then
+        s = Trim(Mid(s, 9))
+        Dim Lat As Double: Lat = Parse_MB_Value1(s)
+        Dim Lon As Double: Lon = Parse_MB_Value2(s)
+        Set m_Lat = MNew.AngleDecD(Lat)
+        If m_Lat.Value < 0 Then m_Lat.Dir = "S" Else m_Lat.Dir = "N"
+        Set m_Lon = MNew.AngleDecD(Lon)
+        If m_Lon.Value < 0 Then m_Lon.Dir = "W" Else m_Lon.Dir = "E"
+        m_Name = "MB-Baustatik-Geodat"
+        Parse = True
+        Exit Function
+    End If
+    'Else
     Dim sa() As String: sa = GetSA(s)
     Dim u As Long: u = UBound(sa)
+    If u < 1 Then Exit Function
     Dim i As Long
-    If i <= u Then Set m_Lat = MNew.AngleDecS(sa(i)): i = i + 1
-    If i <= u Then Set m_Lon = MNew.AngleDecS(sa(i)): i = i + 1
-    If i <= u Then m_Height = CDbl(sa(i)): i = i + 1
-    If i <= u Then m_Name = sa(i): i = i + 1
-    If m_Lat.Value < 0 Then m_Lat.Dir = "S" Else m_Lat.Dir = "N"
-    If m_Lon.Value < 0 Then m_Lon.Dir = "W" Else m_Lon.Dir = "E"
-End Sub
+    Dim tmp As New Angle
+    If i <= u Then
+        Parse = tmp.Parse(sa(i))
+        If Not Parse Then Exit Function
+        Set m_Lat = MNew.AngleDecS(sa(i))
+        i = i + 1
+        If m_Lat.Value < 0 Then m_Lat.Dir = "S" Else m_Lat.Dir = "N"
+    End If
+    If i <= u Then
+        Parse = tmp.Parse(sa(i))
+        If Not Parse Then Exit Function
+        Set m_Lon = MNew.AngleDecS(sa(i))
+        i = i + 1
+        If m_Lon.Value < 0 Then m_Lon.Dir = "W" Else m_Lon.Dir = "E"
+    End If
+    If i <= u Then
+        m_Height = CDbl(sa(i))
+        i = i + 1
+    End If
+    If i <= u Then
+        m_Name = sa(i)
+        'i = i + 1
+    End If
+    Parse = True
+Catch:
+End Function
+
+Private Function IsMBBaustatikFormat(ByVal s As String) As Boolean
+    s = UCase(s)
+    IsMBBaustatikFormat = InStr(s, "[GEODAT]") > 0
+    If Not IsMBBaustatikFormat Then Exit Function
+    IsMBBaustatikFormat = Len(s) > 20
+End Function
+
+Private Function Parse_MB_Value1(ByVal s As String) As Double
+    'das erste istgleich-Zeichen
+    Dim p1 As Long: p1 = InStr(1, s, "=")
+    Dim z As String, ch As String, ds As Boolean
+    If p1 > 0 Then
+        s = Trim(Mid(s, p1 + 1))
+        Dim i As Long
+        For i = 1 To Len(s)
+            ch = Mid(s, i, 1)
+            Select Case Asc(ch)
+            Case 44, 46:    If ds Then Exit For
+                            z = z & ".": ds = True
+            Case 48 To 57  ', . 0 - 9
+                            z = z & ch
+            Case Else: Exit For
+            End Select
+        Next
+        If IsNumeric(z) Then Parse_MB_Value1 = Val(z)
+        'das zweite istgleich-Zeichen
+        'Dim p2 As Long: p2 = InStr(p1 + 2, s, "=")
+    End If
+End Function
+Private Function Parse_MB_Value2(ByVal s As String) As Double
+    'das erste istgleich-Zeichen
+    Dim p1 As Long: p1 = InStr(1, s, "=")
+    Dim z As String, ch As String, ds As Boolean
+    If p1 > 0 Then
+        'das zweite istgleich-Zeichen
+        Dim p2 As Long: p2 = InStr(p1 + 2, s, "=")
+        If p2 > 0 Then
+            s = Trim(Mid(s, p2 + 1))
+            Dim i As Long
+            For i = 1 To Len(s)
+                ch = Mid(s, i, 1)
+                Select Case Asc(ch)
+                Case 44, 46:    If ds Then Exit For
+                                z = z & ".": ds = True
+                Case 48 To 57  ', . 0 - 9
+                                z = z & ch
+                Case Else: Exit For
+                End Select
+            Next
+            If IsNumeric(z) Then Parse_MB_Value2 = Val(z)
+        End If
+    End If
+End Function
 
 Private Function GetSA(s As String) As String()
     Dim sa1() As String: sa1 = Split(s, "; ")
     Dim u1 As Long: u1 = UBound(sa1)
     Dim sa2() As String: sa2 = Split(s, vbTab)
     Dim u2 As Long: u2 = UBound(sa2)
-    If u2 > u1 Then GetSA = sa2 Else GetSA = sa1
+    If u2 > u1 Then
+        GetSA = sa2
+    Else
+        sa2 = Split(s, " ")
+        u2 = UBound(sa2)
+        If u2 > u1 Then
+            GetSA = sa2
+        Else
+            GetSA = sa1
+        End If
+    End If
 End Function
 
 Public Function HaverSineDistanceTo(other As GeoPos) As Double
@@ -228,7 +340,7 @@ End Function
 Private Function GetStr(ByVal v As Double) As String
     'Converts a Double to String by using the function Str for ensuring "." as a decimalseparator
     'we could also use CDbl and eventually replace comma (",") with period (".")
-    GetStr = Trim(Str(v))
+    GetStr = Trim(str(v))
     Dim c As Integer: c = AscW(Left(GetStr, 1))
     Select Case c
     'Asc("0") = 48; Asc("9") = 57;
@@ -248,30 +360,27 @@ Public Function Coords_ToKml() As String
     Coords_ToKml = GetStr(m_Lon.ToGrad) & "," & GetStr(m_Lat.ToGrad) & "," & m_Height
 End Function
 
-Public Function ToStrKml(Optional ByVal aName As String) As String
-    Dim coords As String: coords = Coords_ToKml 'GetStr(m_Lon.ToGrad * m_Lon.Direction) & "," & GetStr(m_Lat.ToGrad * m_Lat.Direction) & "," & m_Height
-    If Len(aName) = 0 Then aName = m_Name
-    If Len(aName) = 0 Then aName = coords
-    Dim s As String: s = ""
-    s = s & "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbCrLf & _
-            "<kml xmlns=""http://www.opengis.net/kml/2.2"" xmlns:gx=""http://www.google.com/kml/ext/2.2"" xmlns:kml=""http://www.opengis.net/kml/2.2"" xmlns:atom=""http://www.w3.org/2005/Atom"">" & vbCrLf & _
-            "<Placemark>" & vbCrLf & _
-            "    <name>" & aName & "</name>" & vbCrLf & _
-            "    <Point>" & vbCrLf & _
-            "        <coordinates>" & coords & "</coordinates>" & vbCrLf & _
-            "    </Point>" & vbCrLf & _
-            "</Placemark>" & vbCrLf & _
-            "</kml>"
-    ToStrKml = s
-End Function
+'Public Function ToKmlPlacemark(Optional ByVal aName As String) As String
+'    Dim Coords As String: Coords = Coords_ToKml 'GetStr(m_Lon.ToGrad * m_Lon.Direction) & "," & GetStr(m_Lat.ToGrad * m_Lat.Direction) & "," & m_Height
+'    If Len(aName) = 0 Then aName = m_Name
+'    If Len(aName) = 0 Then aName = Coords
+'    Dim s As String: s = ""
+'    s = s & "        <Placemark>" & vbCrLf & _
+'            "            <name>" & aName & "</name>" & vbCrLf & _
+'            "            <Point>" & vbCrLf & _
+'            "                <coordinates>" & Coords & "</coordinates>" & vbCrLf & _
+'            "            </Point>" & vbCrLf & _
+'            "        </Placemark>"
+'    ToKmlPlacemark = s
+'End Function
 
 'https://www.koordinaten-umrechner.de/decimal/48.137394,11.575447?karte=OpenStreetMap&zoom=8
 Public Function ToKoUmrLink() As String
     'here first Latitude then Longitude, the other way around for kml-file
-    Dim coords As String: coords = GetStr(m_Lat.ToGrad) & "," & GetStr(m_Lon.ToGrad)
-    ToKoUmrLink = "https://www.koordinaten-umrechner.de/decimal/" & coords & "?karte=OpenStreetMap&zoom=8"
+    Dim Coords As String: Coords = GetStr(m_Lat.ToGrad) & "," & GetStr(m_Lon.ToGrad)
+    ToKoUmrLink = "https://www.koordinaten-umrechner.de/decimal/" & Coords & "?karte=OpenStreetMap&zoom=8"
 End Function
 
 Public Function ToGEWeb() As String
-    ToGEWeb = Trim(Str(Me.Latitude.GradF)) & "," & Trim(Str(Me.Longitude.GradF)) & "," & Trim(Str(Me.Height) & "a") & "," & Trim(Str(1000) & "d") & ",35y,0h,0t,0r"
+    ToGEWeb = Trim(str(Me.Latitude.GradF)) & "," & Trim(str(Me.Longitude.GradF)) & "," & Trim(str(Me.Height) & "a") & "," & Trim(str(1000) & "d") & ",35y,0h,0t,0r"
 End Function

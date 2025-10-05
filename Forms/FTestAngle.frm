@@ -219,7 +219,7 @@ Private Type Point2D
     y As Double
 End Type
 Private Type Points
-    Arr() As Point2D
+    arr() As Point2D
 End Type
 Private m_Graphs() As Points
 
@@ -250,19 +250,19 @@ Private Sub Form_Load()
 End Sub
 
 Private Sub Form_Resize()
-    Dim L As Single, T As Single, W As Single, H As Single
-    L = PnlTestNumeric.Left:   T = PnlTestNumeric.Top
-    W = Me.ScaleWidth:  H = Me.ScaleHeight - T
-    If W > 0 And H > 0 Then PnlTestNumeric.Move L, T, W, H
-    If W > 0 And H > 0 Then PnlTestGraphic.Move L, T, W, H
-    L = (PnlTestGraphic.ScaleWidth - CmbGrafikTest.Width) / 2: T = CmbGrafikTest.Top
-    CmbGrafikTest.Move L, T
-    L = List1.Left:  T = List1.Top
-    W = List1.Width: H = PnlTestNumeric.ScaleHeight - T
-    If W > 0 And H > 0 Then List1.Move L, T, W, H
-    L = Text2.Left: T = Text2.Top
-    W = PnlTestNumeric.ScaleWidth - L: H = PnlTestNumeric.ScaleHeight - T
-    If W > 0 And H > 0 Then Text2.Move L, T, W, H
+    Dim L As Single, t As Single, W As Single, H As Single
+    L = PnlTestNumeric.Left:   t = PnlTestNumeric.Top
+    W = Me.ScaleWidth:  H = Me.ScaleHeight - t
+    If W > 0 And H > 0 Then PnlTestNumeric.Move L, t, W, H
+    If W > 0 And H > 0 Then PnlTestGraphic.Move L, t, W, H
+    L = (PnlTestGraphic.ScaleWidth - CmbGrafikTest.Width) / 2: t = CmbGrafikTest.Top
+    CmbGrafikTest.Move L, t
+    L = List1.Left:  t = List1.Top
+    W = List1.Width: H = PnlTestNumeric.ScaleHeight - t
+    If W > 0 And H > 0 Then List1.Move L, t, W, H
+    L = Text2.Left: t = Text2.Top
+    W = PnlTestNumeric.ScaleWidth - L: H = PnlTestNumeric.ScaleHeight - t
+    If W > 0 And H > 0 Then Text2.Move L, t, W, H
     Dim i As Long: i = CmbGrafikTest.ListIndex
     If i >= 0 Then DrawGraph i
 End Sub
@@ -373,64 +373,64 @@ Sub FillGraphs()
     Dim j As Long
     Dim trigono As New Angle
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).Sinus:             Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).Cosinus:           Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).Tangens:           Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).Cosecans:          Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).Secans:            Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).Cotangens:         Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     
     For i = MinPoints To MaxPoints: Points(i).y = trigono.ArcusSinusF(Points(i).x):        Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = trigono.ArcusCosinusF(Points(i).x):      Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = trigono.ArcusTangensF(Points(i).x):      Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     
     For i = MinPoints To MaxPoints: Points(i).y = trigono.ArcusCosecansF(Points(i).x):     Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = trigono.ArcusSecansF(Points(i).x):       Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = trigono.ArcusCotangensF(Points(i).x):    Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     
     
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).SinusHyperbolicus:     Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).CosinusHyperbolicus:   Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).TangensHyperbolicus:   Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).CosecansHyperbolicus:  Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).SecansHyperbolicus:    Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = AngleArr(i).CotangensHyperbolicus: Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     
     For i = MinPoints To MaxPoints: Points(i).y = trigono.AreaSinusHyperbolicusF(Points(i).x):       Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = trigono.AreaCosinusHyperbolicusF(Points(i).x):     Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = trigono.AreaTangensHyperbolicusF(Points(i).x):     Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     
     For i = MinPoints To MaxPoints: Points(i).y = trigono.AreaCosecansHyperbolicusF(Points(i).x):    Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = trigono.AreaSecansHyperbolicusF(Points(i).x):      Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     For i = MinPoints To MaxPoints: Points(i).y = trigono.AreaCotangensHyperbolicusF(Points(i).x):   Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     
     For i = MinPoints To MaxPoints: Points(i).y = MMath.SinusCardinalis(Points(i).x * 2 * MMath.Pi) * 4: Next
-    m_Graphs(j).Arr = Points: j = j + 1
+    m_Graphs(j).arr = Points: j = j + 1
     
 End Sub
 
@@ -449,33 +449,33 @@ Try: On Error GoTo Catch
     PnlTestGraphic.Cls
     'draw the coord-system
     'draw the X-axis
-    Dim X1 As Double, Y1 As Double
-    Dim X2 As Double, Y2 As Double
-    X1 = 0:                         Y1 = YN
-    X2 = PnlTestGraphic.ScaleWidth: Y2 = Y1
-    PnlTestGraphic.Line (X1, Y1)-(X2, Y2)
+    Dim x1 As Double, y1 As Double
+    Dim x2 As Double, Y2 As Double
+    x1 = 0:                         y1 = YN
+    x2 = PnlTestGraphic.ScaleWidth: Y2 = y1
+    PnlTestGraphic.Line (x1, y1)-(x2, Y2)
     
     'draw the Y-axis
-    X1 = XN: Y1 = 0
-    X2 = X1: Y2 = PnlTestGraphic.ScaleHeight
-    PnlTestGraphic.Line (X1, Y1)-(X2, Y2)
+    x1 = XN: y1 = 0
+    x2 = x1: Y2 = PnlTestGraphic.ScaleHeight
+    PnlTestGraphic.Line (x1, y1)-(x2, Y2)
     
     Dim j As Long: j = Index
-    Dim Pts() As Point2D: Pts = m_Graphs(j).Arr
+    Dim Pts() As Point2D: Pts = m_Graphs(j).arr
     'draw the curve
     Dim i As Long
     For i = LBound(Pts) To UBound(Pts) - 1
-        X1 = Pts(i).x + XN:        Y1 = -Pts(i).y + YN
-        X2 = Pts(i + 1).x + XN:    Y2 = -Pts(i + 1).y + YN
-        If X1 < 0 Then X1 = -1
-        If X2 < 0 Then X2 = -1
-        If Y1 < 0 Then Y1 = -1
+        x1 = Pts(i).x + XN:        y1 = -Pts(i).y + YN
+        x2 = Pts(i + 1).x + XN:    Y2 = -Pts(i + 1).y + YN
+        If x1 < 0 Then x1 = -1
+        If x2 < 0 Then x2 = -1
+        If y1 < 0 Then y1 = -1
         If Y2 < 0 Then Y2 = -1
-        If X1 > PnlTestGraphic.ScaleWidth Then X1 = PnlTestGraphic.ScaleWidth
-        If X2 > PnlTestGraphic.ScaleWidth Then X2 = PnlTestGraphic.ScaleWidth
-        If Y1 > PnlTestGraphic.ScaleHeight Then Y1 = PnlTestGraphic.ScaleHeight
+        If x1 > PnlTestGraphic.ScaleWidth Then x1 = PnlTestGraphic.ScaleWidth
+        If x2 > PnlTestGraphic.ScaleWidth Then x2 = PnlTestGraphic.ScaleWidth
+        If y1 > PnlTestGraphic.ScaleHeight Then y1 = PnlTestGraphic.ScaleHeight
         If Y2 > PnlTestGraphic.ScaleHeight Then Y2 = PnlTestGraphic.ScaleHeight
-        PnlTestGraphic.Line (X1, Y1)-(X2, Y2)
+        PnlTestGraphic.Line (x1, y1)-(x2, Y2)
     Next
     Exit Sub
 Catch:

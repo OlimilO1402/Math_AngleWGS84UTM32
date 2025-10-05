@@ -4,7 +4,7 @@ Begin VB.Form FGeoPos
    Caption         =   "Dialog Geo Position"
    ClientHeight    =   3615
    ClientLeft      =   150
-   ClientTop       =   795
+   ClientTop       =   495
    ClientWidth     =   5535
    BeginProperty Font 
       Name            =   "Segoe UI"
@@ -316,6 +316,7 @@ Begin VB.Form FGeoPos
    End
    Begin VB.Menu mnuOption 
       Caption         =   "Option"
+      Visible         =   0   'False
       Begin VB.Menu mnuOptConvert 
          Caption         =   "Convert"
          Checked         =   -1  'True

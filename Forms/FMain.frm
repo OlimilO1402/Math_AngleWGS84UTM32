@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form FMain 
    Caption         =   "FMain"
-   ClientHeight    =   6615
+   ClientHeight    =   7455
    ClientLeft      =   3240
    ClientTop       =   3330
    ClientWidth     =   12750
@@ -16,7 +16,7 @@ Begin VB.Form FMain
    EndProperty
    Icon            =   "FMain.frx":0000
    LinkTopic       =   "FMain"
-   ScaleHeight     =   6615
+   ScaleHeight     =   7455
    ScaleWidth      =   12750
    Begin VB.ListBox LBTrip 
       BeginProperty Font 
@@ -46,7 +46,7 @@ Begin VB.Form FMain
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   3375
+      Height          =   3855
       Left            =   0
       MultiLine       =   -1  'True
       ScrollBars      =   3  'Beides
@@ -128,8 +128,16 @@ Begin VB.Form FMain
       End
       Begin VB.Menu mnuGeoPosDelete 
          Caption         =   "Delete Item(s)"
+         Shortcut        =   {DEL}
       End
       Begin VB.Menu mnuGeoPosSep1 
+         Caption         =   "-"
+      End
+      Begin VB.Menu mnuGeoPosSelectAll 
+         Caption         =   "Select All"
+         Shortcut        =   ^A
+      End
+      Begin VB.Menu mnuGeoPosSep2 
          Caption         =   "-"
       End
       Begin VB.Menu mnuGeoPosCut 
@@ -185,8 +193,21 @@ Begin VB.Form FMain
       Begin VB.Menu mnuOptShowAngles 
          Caption         =   "Show Angle-Dialog"
       End
+      Begin VB.Menu mnuOptShowTestAngles 
+         Caption         =   "Show TestAngles"
+      End
       Begin VB.Menu mnuOptStartGEWeb 
          Caption         =   "Start Google-Earth-Web (not Pro)"
+      End
+      Begin VB.Menu mnuOptCopyPasteAs 
+         Caption         =   "Copy&Paste As..."
+         Begin VB.Menu mnuOptCopyPasteAsWGS84 
+            Caption         =   "WGS-84"
+            Checked         =   -1  'True
+         End
+         Begin VB.Menu mnuOptCopyPasteAsUTM32 
+            Caption         =   "UTM-32"
+         End
       End
    End
 End
@@ -199,23 +220,22 @@ Option Explicit
 'https://www.koordinaten-umrechner.de/decimal/51.000000,10.000000?karte=OpenStreetMap&zoom=8
 Private m_FamousPlaces As Collection 'Of GeoPos
 Private m_Trip         As Collection 'Of GeoPos
-Private m_pfnKml       As String 'pathfilename of kml-file
 'https://earth.google.com/web
 
-Private Sub Command1_Click()
-    Dim lat As Angle: Set lat = MNew.AngleDecD(72)
-    Dim lon As Angle: Set lon = MNew.AngleDecD(0)
-    Dim gps As GeoPos
-    
-    'Set gps = MNew.GeoPos(lat, lon, 123, "Test")
-    'StartKoUmre gps
-    
-    lat.AddDeg 90
-    lon.AddDeg 0 '180
-    Set gps = MNew.GeoPos(lat, lon, 123, "Test")
-    StartGEarth gps
-    
-End Sub
+''Private Sub Command1_Click()
+''    Dim lat As Angle: Set lat = MNew.AngleDecD(72)
+''    Dim lon As Angle: Set lon = MNew.AngleDecD(0)
+''    Dim gps As GeoPos
+''
+''    'Set gps = MNew.GeoPos(lat, lon, 123, "Test")
+''    'StartKoUmre gps
+''
+''    lat.AddDeg 90
+''    lon.AddDeg 0 '180
+''    Set gps = MNew.GeoPos(lat, lon, 123, "Test")
+''    StartGEarth gps
+''
+''End Sub
 
 Private Sub LBFamousPlaces_KeyUp(KeyCode As Integer, Shift As Integer)
     ProcessKeyUp KeyCode, Shift
@@ -223,16 +243,13 @@ End Sub
 
 Private Sub ProcessKeyUp(ByVal KeyCode As Integer, ByVal Shift As Integer)
     Select Case True
-    Case IsStrg(KeyCode, Shift, "X"): mnuGeoPosCut_Click
-    Case IsStrg(KeyCode, Shift, "C"): mnuGeoPosCopy_Click
-    Case IsStrg(KeyCode, Shift, "V"): mnuGeoPosPaste_Click
+    Case KeyCode = KeyCodeConstants.vbKeyDelete:          mnuGeoPosDelete_Click
+    Case IsCtrl(KeyCode, Shift, KeyCodeConstants.vbKeyA): mnuGeoPosSelectAll_Click
+    Case IsCtrl(KeyCode, Shift, KeyCodeConstants.vbKeyX): mnuGeoPosCut_Click
+    Case IsCtrl(KeyCode, Shift, KeyCodeConstants.vbKeyC): mnuGeoPosCopy_Click
+    Case IsCtrl(KeyCode, Shift, KeyCodeConstants.vbKeyV): mnuGeoPosPaste_Click
     End Select
 End Sub
-Private Function IsStrg(ByVal KeyCode As Integer, ByVal Shift As Integer, ByVal Key As String) As Boolean
-    Dim ck As String: ck = ChrW(KeyCode)
-    If ck <> UCase(Key) And ck <> LCase(Key) Then Exit Function
-    IsStrg = Shift And ShiftConstants.vbCtrlMask
-End Function
 
 'Wishes:
 ' * do file operations with class PathFileName get the
@@ -248,9 +265,7 @@ Private Sub Form_Load()
     Me.Caption = "Angle, GeoPos(gps)WGS84,UTM32 v" & App.Major & "." & App.Minor & "." & App.Revision
     AddPlaces
     Set m_Trip = New Collection
-    
-    m_pfnKml = pathTemp & "\" & fnKml
-    
+        
     mnuPopGPS.Visible = False
     mnuPopTrip.Visible = False
     mnuPopOptions.Visible = False
@@ -267,21 +282,21 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-    If FileExists(m_pfnKml) Then Kill m_pfnKml
+    MMain.KillTempKmlIfExists
 End Sub
 
 Private Sub Form_Resize()
-    Dim l As Single, T As Single: T = LBFamousPlaces.Top
+    Dim L As Single, t As Single: t = LBFamousPlaces.Top
     Dim W As Single: W = Me.ScaleWidth / 2
     Dim H As Single: H = Me.ScaleHeight - LBFamousPlaces.Top - TxtResults.Height
-    If W > 0 And H > 0 Then LBFamousPlaces.Move l, T, W, H
-    l = LBFamousPlaces.Left + LBFamousPlaces.Width
-    If W > 0 And H > 0 Then LBTrip.Move l, T, W, H: LblTripResults.Left = l
-    l = 0
+    If W > 0 And H > 0 Then LBFamousPlaces.Move L, t, W, H
+    L = LBFamousPlaces.Left + LBFamousPlaces.Width
+    If W > 0 And H > 0 Then LBTrip.Move L, t, W, H: LblTripResults.Left = L
+    L = 0
     H = TxtResults.Height 'Me.ScaleHeight - T - LBFamousPlaces.Height
-    T = Me.ScaleHeight - H
+    t = Me.ScaleHeight - H
     W = Me.ScaleWidth
-    If W > 0 And H > 0 Then TxtResults.Move l, T, W, H
+    If W > 0 And H > 0 Then TxtResults.Move L, t, W, H
 End Sub
 
 Private Sub AddPlaces()
@@ -361,10 +376,25 @@ End Sub
 Private Sub LBFamousPlaces_Click()
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then Exit Sub
-    Dim gps As GeoPos: Set gps = MNew.GeoPosS(LBFamousPlaces.Text)
-    Dim utm As UTM32: Set utm = gps.ToUTM32(MUTM.EllipsoWGS84)   'the ellipsoid WGS-84 = number 22
-    TxtResults.Text = utm.ToStr & vbCrLf & gps.ToStr & vbCrLf & gps.ToStrKml & vbCrLf & gps.ToKoUmrLink
+    Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
+    Dim utm As UTM32:  Set utm = gps.ToUTM32(MUTM.EllipsoWGS84)   'the ellipsoid WGS-84 = number 22
+    Dim kml As DocumentKml: Set kml = GetKmlDocWithAllSelectedGPS
+    'TxtResults.Text = utm.ToStr & vbCrLf & gps.ToStr & vbCrLf & gps.ToStrKml & vbCrLf & gps.ToKoUmrLink
+    TxtResults.Text = utm.ToStr & vbCrLf & gps.ToStr & vbCrLf & gps.ToKoUmrLink & vbCrLf & kml.ToStr
 End Sub
+
+Function GetKmlDocWithAllSelectedGPS() As DocumentKml
+    Dim kml As DocumentKml: Set kml = MMain.GetDocumentKml
+    Dim i As Long, s As String, gps As GeoPos
+    For i = 0 To LBFamousPlaces.ListCount - 1
+        If LBFamousPlaces.Selected(i) Then
+            s = LBFamousPlaces.List(i)
+            Set gps = MNew.GeoPosS(s)
+            kml.Add gps
+        End If
+    Next
+    Set GetKmlDocWithAllSelectedGPS = kml
+End Function
 
 Private Sub LBFamousPlaces_DblClick()
     mnuGeoPosEdit_Click
@@ -373,6 +403,7 @@ End Sub
 
 Private Sub LBFamousPlaces_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = MouseButtonConstants.vbRightButton Then
+        mnuStartGEarth.Caption = "Show Position" & IIf(LBFamousPlaces.SelCount <= 1, "", "s") & " in Google Earth"
         PopupMenu mnuPopGPS
     End If
 End Sub
@@ -450,10 +481,10 @@ Private Function GetRouteForGE() As String
     Dim gps As GeoPos
     
     Set gps = m_Trip.Item(1)
-    GetRouteForGE = "from:" & Trim(Str(gps.Latitude.ToGrad)) & "," & Trim(Str(gps.Longitude.ToGrad))
+    GetRouteForGE = "from:" & Trim(str(gps.Latitude.ToGrad)) & "," & Trim(str(gps.Longitude.ToGrad))
     
     Set gps = m_Trip.Item(2)
-    GetRouteForGE = GetRouteForGE & " to:" & Trim(Str(gps.Latitude.ToGrad)) & "," & Trim(Str(gps.Longitude.ToGrad))
+    GetRouteForGE = GetRouteForGE & " to:" & Trim(str(gps.Latitude.ToGrad)) & "," & Trim(str(gps.Longitude.ToGrad))
 End Function
 
 Private Function GetGeoPos(s As String) As GeoPos
@@ -504,9 +535,20 @@ End Sub
 
 Private Sub mnuGeoPosPaste_Click()
     Dim s As String: s = Clipboard.GetText
-    Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
+    If Len(s) = 0 Then Exit Sub
+    Dim gps As GeoPos
+    If mnuOptCopyPasteAsWGS84.Checked Then
+        Dim tmp_gps As New GeoPos
+        If Not tmp_gps.Parse(s) Then Exit Sub
+        'Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
+        Set gps = tmp_gps
+    Else
+        Dim tmp_utm As New UTM32
+        If Not tmp_utm.Parse(s) Then Exit Sub
+        Set gps = tmp_utm.ToWGS84(MUTM.EllipsoWGS84)
+    End If
     Dim i As Long: i = LBFamousPlaces.ListIndex + 1
-    If i = 0 Then
+    If i = 1 Then
         m_FamousPlaces.Add gps
     Else
         m_FamousPlaces.Add gps, , i
@@ -566,6 +608,27 @@ Try: On Error GoTo Catch
 Catch:
 End Sub
 
+Private Sub mnuGeoPosSelectAll_Click()
+    Dim i As Long
+    For i = 0 To LBFamousPlaces.ListCount - 1
+        LBFamousPlaces.Selected(i) = True
+    Next
+End Sub
+
+Private Sub mnuOptCopyPasteAsUTM32_Click()
+    mnuOptCopyPasteAsWGS84.Checked = False
+    mnuOptCopyPasteAsUTM32.Checked = True
+End Sub
+
+Private Sub mnuOptCopyPasteAsWGS84_Click()
+    mnuOptCopyPasteAsWGS84.Checked = True
+    mnuOptCopyPasteAsUTM32.Checked = False
+End Sub
+
+Private Sub mnuOptShowTestAngles_Click()
+    FTestAngle.Show
+End Sub
+
 Private Sub mnuOptStartGEWeb_Click()
     mnuOptStartGEWeb.Checked = Not mnuOptStartGEWeb.Checked
 End Sub
@@ -581,11 +644,11 @@ Private Sub mnuStartGEarth_Click()
 Try: On Error GoTo Catch
     Dim s As String: s = LBFamousPlaces.Text
     If Len(s) = 0 Then MsgBox "Select item first": Exit Sub
-    Dim gps As GeoPos: Set gps = MNew.GeoPosS(s)
+    Dim kml As DocumentKml: Set kml = Me.GetKmlDocWithAllSelectedGPS
     If mnuOptStartGEWeb.Checked Then
-        StartGEWeb gps
+        StartGEWeb kml
     Else
-        StartGEarth gps
+        StartGEarth kml
     End If
     Exit Sub
 Catch:
@@ -598,37 +661,7 @@ Try: On Error GoTo Catch
     Shell cmd, vbNormalFocus
     Exit Sub
 Catch:
-    MsgBox "Could not start your webbrowser, maybe edge, chrome, firefox what have your, not found"
-End Sub
-
-Private Sub StartGEarth(gps As GeoPos)
-Try: On Error GoTo Catch
-    If Not FileExists(pfnGE) Then
-        MsgBox "Path to Google Earth Pro not found" & vbCrLf & pfnGE
-        Exit Sub
-    End If
-    If FileExists(m_pfnKml) Then
-        Kill m_pfnKml
-    End If
-    If Not SaveFile(m_pfnKml, gps.ToStrKml) Then
-        MsgBox "Could not write kmlfile: " & vbCrLf & m_pfnKml
-        Exit Sub
-    End If
-    'maybe here edit the path to your Google Earth installation
-    Dim cmd As String: cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
-    Shell cmd, vbNormalFocus
-    Exit Sub
-Catch:
-    MsgBox "Errors during start of Google Earth Pro"
-End Sub
-
-Private Sub StartGEWeb(gps As GeoPos)
-Try: On Error GoTo Catch
-    Dim cmd As String: cmd = """" & pfnFF & """" & " " & """" & MMain.GEWeb & gps.ToGEWeb & """"
-    Shell cmd, vbNormalFocus
-    Exit Sub
-Catch:
-    MsgBox "Could not start google earth, maybe googleearth.exe or firefox.exe not found"
+    MsgBox "Could not start your webbrowser, maybe edge, chrome, firefox what have you, not found"
 End Sub
 
 Private Sub mnuAddToTrip_Click()
@@ -718,11 +751,12 @@ Private Sub mnuTripStartGEarth_Click()
             "    </Placemark>" & vbCrLf & _
             "</Document>" & vbCrLf & _
             "</kml>"
-    If FileExists(m_pfnKml) Then Kill m_pfnKml
-    If SaveFile(m_pfnKml, s) Then
+    'If FileExists(m_PFNkml) Then Kill m_PFNkml
+    MMain.KillTempKmlIfExists
+    If SaveFile(m_PFNkml, s) Then
         'maybe here edit the path to your Google Earth installation
         If FileExists(pfnGE) Then
-            Dim cmd As String: cmd = """" & pfnGE & """" & " " & """" & m_pfnKml & """"
+            Dim cmd As String: cmd = """" & pfnGE & """" & " " & """" & m_PFNkml & """"
             Shell cmd, vbNormalFocus
         Else
             'trying to load the kml-file to Google-Earth-Web
@@ -778,14 +812,14 @@ Private Sub mnuOptFolderDocs_Click()
     mnuOptFolderDocs.Checked = True
     mnuOptFolderTemp.Checked = False
     mnuOptFolderOpen.Caption = "Open Folder: Documents"
-    m_pfnKml = pathDocs & "\" & fnKml
+    m_PFNkml = pathDocs & "\" & fnKml
 End Sub
 
 Private Sub mnuOptFolderTemp_Click()
     mnuOptFolderDocs.Checked = False
     mnuOptFolderTemp.Checked = True
     mnuOptFolderOpen.Caption = "Open Folder: Temp"
-    m_pfnKml = pathTemp & "\" & fnKml
+    m_PFNkml = pathTemp & "\" & fnKml
 End Sub
 
 Private Sub mnuOptFolderOpen_Click()

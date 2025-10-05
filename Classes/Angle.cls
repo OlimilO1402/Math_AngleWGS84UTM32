@@ -64,7 +64,7 @@ Public Function Parse(s As String) As Boolean
     '48d45'22.123"
     '48°45'22.123''
     Dim deg As Double, Min As Double, sec As Double
-    Dim i As Long, State As Long, n As Double: n = 1
+    Dim i As Long, State As Long, N As Double: N = 1
     Dim nenn As Double
     Dim lens As Long: lens = Len(s)
     Dim DirFakt As Double: DirFakt = 1
@@ -101,11 +101,11 @@ Public Function Parse(s As String) As Boolean
             End If
         Case 1
             If 48 <= ac And ac <= 57 Then     'die Nachkommastellen von Grad
-                n = n * 10#
-                deg = deg + (ac - 48) / n
+                N = N * 10#
+                deg = deg + (ac - 48) / N
             ElseIf ac = 100 Or ac = 176 Then  '0-9 das Grad Zeichen "°" oder "d" für degree
                 State = 2
-                n = 1
+                N = 1
             ElseIf ac = 112 Or ac = 80 Then   'p oder P d.h. alles bis dahin ist ein Faktor von Pi
                 deg = deg * 180
                 Exit Do
@@ -118,7 +118,7 @@ Public Function Parse(s As String) As Boolean
                 Min = Min * 10 + ac - 48
             ElseIf ac = 44 Or ac = 46 Then    '., Dezimalpunkt oder Dezimalkomma
                 State = 3
-                n = 1
+                N = 1
             ElseIf ac = 39 Then               ' ' das Minuten Zeichen " ' "
                 State = 4
             ElseIf ac = 32 Then               '" " Leerzeichen ignorieren
@@ -128,11 +128,11 @@ Public Function Parse(s As String) As Boolean
             End If
         Case 3
             If 48 <= ac And ac <= 57 Then     '0-9 die Nachkommastellen von Minuten
-                n = n * 10#
-                Min = Min + (ac - 48) / n
+                N = N * 10#
+                Min = Min + (ac - 48) / N
             ElseIf ac = 39 Then               '" das Minuten Zeichen " ' "
                 State = 4
-                n = 1
+                N = 1
             ElseIf ac = 32 Then               '" " Leerzeichen ignorieren
             Else
                 State = 6
@@ -150,8 +150,8 @@ Public Function Parse(s As String) As Boolean
             End If
         Case 5
             If 48 <= ac And ac <= 57 Then     'die Nachkommastellen von Sekunden
-                n = n * 10#
-                sec = sec + (ac - 48) / n
+                N = N * 10#
+                sec = sec + (ac - 48) / N
             ElseIf ac = 34 Or ac = 39 Then    'das Sekunden Zeichen "''" oder """" fertig raus
                 Exit Do
             ElseIf ac = 32 Then               'Leerzeichen ignorieren
@@ -180,6 +180,14 @@ End Property
 Public Property Let Value(DblValue)
     m_Angle = DblValue
 End Property
+
+Public Function IsEqual(other As Angle) As Boolean
+'    If Me.Value <> other.Value Then Exit Function
+'    If Me.Dir <> other.Dir Then Exit Function
+'    IsEqual = True
+    IsEqual = Me.Value = other.Value
+    If IsEqual Then IsEqual = Me.Dir = other.Dir
+End Function
 
 Public Function ToRad() As Double
     ToRad = m_Angle
@@ -357,8 +365,8 @@ Public Function Mul(ByVal Value As Double) As Angle
     Set Mul = MNew.Angle(m_Angle * Value)
 End Function
 
-Public Function Div(ByVal Value As Double) As Angle
-    Set Div = MNew.Angle(m_Angle / Value)
+Public Function div(ByVal Value As Double) As Angle
+    Set div = MNew.Angle(m_Angle / Value)
 End Function
 
 Public Function Abss(a As Angle) As Angle
@@ -412,11 +420,11 @@ Public Function ArcusCosinus(ByVal x As Double) As Angle     ' aka arccos
     Set ArcusCosinus = New Angle: ArcusCosinus.New_ ArcusCosinusF(x)
 End Function
 
-Public Function ArcusTangensF(ByVal T As Double) As Double   ' aka arctan
-    ArcusTangensF = VBA.Math.Atn(T)
+Public Function ArcusTangensF(ByVal t As Double) As Double   ' aka arctan
+    ArcusTangensF = VBA.Math.Atn(t)
 End Function
-Public Function ArcusTangens(ByVal T As Double) As Angle     ' aka arctan
-    Set ArcusTangens = New Angle: ArcusTangens.New_ ArcusTangensF(T)
+Public Function ArcusTangens(ByVal t As Double) As Angle     ' aka arctan
+    Set ArcusTangens = New Angle: ArcusTangens.New_ ArcusTangensF(t)
 End Function
 
 'ArcusTangensXY: also known as ATan2
@@ -469,11 +477,11 @@ Public Function ArcusSecans(ByVal x As Double) As Angle      ' aka arcsec
     Set ArcusSecans = New Angle: ArcusSecans.New_ ArcusSecansF(x)
 End Function
 
-Public Function ArcusCotangensF(ByVal T As Double) As Double ' aka arccot
-    ArcusCotangensF = MMath.Pi * 0.5 - VBA.Math.Atn(T)
+Public Function ArcusCotangensF(ByVal t As Double) As Double ' aka arccot
+    ArcusCotangensF = MMath.Pi * 0.5 - VBA.Math.Atn(t)
 End Function
-Public Function ArcusCotangens(ByVal T As Double) As Angle   ' aka arccot
-    Set ArcusCotangens = New Angle: ArcusCotangens.New_ ArcusCotangensF(T)
+Public Function ArcusCotangens(ByVal t As Double) As Angle   ' aka arccot
+    Set ArcusCotangens = New Angle: ArcusCotangens.New_ ArcusCotangensF(t)
 End Function
 
 ' ###################### '  hyperbolic funktions   ' ##################### '
@@ -515,12 +523,12 @@ Public Function AreaCosinusHyperbolicus(ByVal x As Double) As Angle     ' aka ar
     Set AreaCosinusHyperbolicus = New Angle: AreaCosinusHyperbolicus.New_ AreaCosinusHyperbolicusF(x)
 End Function
 
-Public Function AreaTangensHyperbolicusF(ByVal T As Double) As Double   ' aka artanh
-    If T < -1 Or 1 < T Then Exit Function
-    AreaTangensHyperbolicusF = VBA.Math.Log((1 + T) / (1 - T)) / 2
+Public Function AreaTangensHyperbolicusF(ByVal t As Double) As Double   ' aka artanh
+    If t < -1 Or 1 < t Then Exit Function
+    AreaTangensHyperbolicusF = VBA.Math.Log((1 + t) / (1 - t)) / 2
 End Function
-Public Function AreaTangensHyperbolicus(ByVal T As Double) As Angle     ' aka artanh
-    Set AreaTangensHyperbolicus = New Angle: AreaTangensHyperbolicus.New_ AreaTangensHyperbolicusF(T)
+Public Function AreaTangensHyperbolicus(ByVal t As Double) As Angle     ' aka artanh
+    Set AreaTangensHyperbolicus = New Angle: AreaTangensHyperbolicus.New_ AreaTangensHyperbolicusF(t)
 End Function
 
 Public Function AreaCosecansHyperbolicusF(ByVal x As Double) As Double  ' aka arcsch

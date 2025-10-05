@@ -16,12 +16,12 @@ Option Explicit
 'https://de.wikipedia.org/wiki/UTM-Koordinatensystem
 'https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system
 'For example, the CN Tower is at 43°38'33.24"N 79°23'13.7"W, which is in UTM zone 17, and the grid position is 630084 m east, 4833438 m north.
-Private m_Name As String
+Private m_Name     As String
 Private m_Northing As Double
 Private m_Easting  As Double
 Private m_ZoneNum  As Integer
 Private m_ZoneStr  As String
-Private m_Height As Double
+Private m_Height   As Double
 
 Friend Sub New_(ByVal Northing As Double, ByVal Easting As Double, ByVal UTMZone As String)
     m_Northing = Northing: m_Easting = Easting: Me.Zone = UTMZone
@@ -44,6 +44,58 @@ End Sub
 
 Friend Function Clone() As UTM32
     Set Clone = New UTM32: Clone.NewC Me
+End Function
+
+Public Function Parse(ByVal s As String) As Boolean
+Try: On Error GoTo Catch
+    s = Trim(s)
+    If Len(s) = 0 Then Exit Function
+    Dim sa() As String: sa = GetSA(s)
+    Dim u As Long: u = UBound(sa)
+    If u < 1 Then Exit Function
+    Dim i As Long
+    If i <= u Then
+        Parse = tmp.Parse(sa(i))
+        If Not Parse Then Exit Function
+        Set m_Lat = MNew.AngleDecS(sa(i))
+        i = i + 1
+        If m_Lat.Value < 0 Then m_Lat.Dir = "S" Else m_Lat.Dir = "N"
+    End If
+    If i <= u Then
+        Parse = tmp.Parse(sa(i))
+        If Not Parse Then Exit Function
+        Set m_Lon = MNew.AngleDecS(sa(i))
+        i = i + 1
+        If m_Lon.Value < 0 Then m_Lon.Dir = "W" Else m_Lon.Dir = "E"
+    End If
+    If i <= u Then
+        m_Height = CDbl(sa(i))
+        i = i + 1
+    End If
+    If i <= u Then
+        m_Name = sa(i)
+        'i = i + 1
+    End If
+    Parse = True
+Catch:
+End Function
+
+Private Function GetSA(s As String) As String()
+    Dim sa1() As String: sa1 = Split(s, "; ")
+    Dim u1 As Long: u1 = UBound(sa1)
+    Dim sa2() As String: sa2 = Split(s, vbTab)
+    Dim u2 As Long: u2 = UBound(sa2)
+    If u2 > u1 Then
+        GetSA = sa2
+    Else
+        sa2 = Split(s, " ")
+        u2 = UBound(sa2)
+        If u2 > u1 Then
+            GetSA = sa2
+        Else
+            GetSA = sa1
+        End If
+    End If
 End Function
 
 
@@ -83,10 +135,10 @@ Public Property Get Zone() As String
 End Property
 
 Private Function StrToUL(ByVal Value As String, sRest_out As String) As Long
-    Dim l As Long: l = Len(Value)
-    If l = 0 Then
+    Dim L As Long: L = Len(Value)
+    If L = 0 Then
         Value = "01C"
-        l = 3
+        L = 3
     End If
     Dim State As Integer, i As Long, ch As String, ac As Integer
     Dim zs As String, zi As Integer ': zi = -1
@@ -115,7 +167,7 @@ Private Function StrToUL(ByVal Value As String, sRest_out As String) As Long
         Case 2 'Error
             Exit Do
         End Select
-    Loop While i < l
+    Loop While i < L
     StrToUL = zi
     sRest_out = zs
 End Function
@@ -196,8 +248,8 @@ Private Sub LLtoUTM(ByVal ERadius As Double, ByVal eccs As Double, ByVal LatGrad
     
     Dim eccPrimeSquared As Double: eccPrimeSquared = (eccSquared) / (1 - eccSquared)
 
-    Dim n  As Double: n = a / VBA.Math.Sqr(1 - eccSquared * Sin(LatRad) * Sin(LatRad))
-    Dim T  As Double: T = VBA.Math.Tan(LatRad) * VBA.Math.Tan(LatRad)
+    Dim N  As Double: N = a / VBA.Math.Sqr(1 - eccSquared * Sin(LatRad) * Sin(LatRad))
+    Dim t  As Double: t = VBA.Math.Tan(LatRad) * VBA.Math.Tan(LatRad)
     Dim c  As Double: c = eccPrimeSquared * VBA.Math.Cos(LatRad) * VBA.Math.Cos(LatRad)
     Dim AA As Double: AA = Cos(LatRad) * (LonRad - LonOriginRad)
     Dim M  As Double
@@ -206,12 +258,12 @@ Private Sub LLtoUTM(ByVal ERadius As Double, ByVal eccs As Double, ByVal LatGrad
                                     + (15 * eccSquared * eccSquared / 256 + 45 * eccSquared * eccSquared * eccSquared / 1024) * Sin(4 * LatRad) _
                                     - (35 * eccSquared * eccSquared * eccSquared / 3072) * Sin(6 * LatRad))
     
-    m_Easting = CDbl((k0 * n * (AA + (1 - T + c) * AA * AA * AA / 6 _
-                    + (5 - 18 * T + T * T + 72 * c - 58 * eccPrimeSquared) * AA * AA * AA * AA * AA / 120) _
+    m_Easting = CDbl((k0 * N * (AA + (1 - t + c) * AA * AA * AA / 6 _
+                    + (5 - 18 * t + t * t + 72 * c - 58 * eccPrimeSquared) * AA * AA * AA * AA * AA / 120) _
                     + 500000#))
 
-    m_Northing = CDbl((k0 * (M + n * Tan(LatRad) * (AA * AA / 2 + (5 - T + 9 * c + 4 * c * c) * AA * AA * AA * AA / 24 _
-                 + (61 - 58 * T + T * T + 600 * c - 330 * eccPrimeSquared) * AA * AA * AA * AA * AA * AA / 720))))
+    m_Northing = CDbl((k0 * (M + N * Tan(LatRad) * (AA * AA / 2 + (5 - t + 9 * c + 4 * c * c) * AA * AA * AA * AA / 24 _
+                 + (61 - 58 * t + t * t + 600 * c - 330 * eccPrimeSquared) * AA * AA * AA * AA * AA * AA / 720))))
     If (lat < 0) Then m_Northing = m_Northing + 10000000#  '; //10000000 meter offset for southern hemisphere
     
 End Sub

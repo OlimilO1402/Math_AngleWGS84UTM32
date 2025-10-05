@@ -7,6 +7,7 @@ Public pfnGE     As String 'pathfilename to google earth pro (or link to google 
 Public GEWeb     As String 'base link to google earth web
 Public pfnFF     As String 'pathfilename to firefox
 Public fnKml     As String 'default filename of kml file
+Private m_PFNkml As String
 
 Sub Main()
     
@@ -19,11 +20,52 @@ Sub Main()
     pfnGE = pathProgs & "\Google\Google Earth Pro\client\googleearth.exe"
     GEWeb = "https://earth.google.com/web/@" 'LatitudeInDegree, LongitudeInDegree, height,
     fnKml = "AngleWGS84UTM32GoogleEarth.kml"
+    m_PFNkml = pathTemp & "\" & fnKml
     
     MMath.Init
     MUTM.Init
     FMain.Show
     'FTestAngle.Show
+End Sub
+
+Public Function GetDocumentKml() As DocumentKml
+    Set GetDocumentKml = New DocumentKml: GetDocumentKml.New_ m_PFNkml
+End Function
+
+Public Sub KillTempKmlIfExists()
+    If FileExists(m_PFNkml) Then Kill m_PFNkml
+End Sub
+
+'Private Sub StartGEarth(gps As GeoPos)
+Public Sub StartGEarth(kml As DocumentKml)
+Try: On Error GoTo Catch
+    If Not FileExists(pfnGE) Then
+        MsgBox "Path to Google Earth Pro not found" & vbCrLf & pfnGE
+        Exit Sub
+    End If
+    kml.Save
+    'If FileExists(m_PFNkml) Then
+    '    Kill m_PFNkml
+    'End If
+    'If Not SaveFile(m_PFNkml, gps.ToStrKml) Then
+    '    MsgBox "Could not write kmlfile: " & vbCrLf & m_PFNkml
+    '    Exit Sub
+    'End If
+    'maybe here edit the path to your Google Earth installation
+    Dim cmd As String: cmd = """" & pfnGE & """" & " " & """" & m_PFNkml & """"
+    Shell cmd, vbNormalFocus
+    Exit Sub
+Catch:
+    MsgBox "Errors during start of Google Earth Pro"
+End Sub
+
+Public Sub StartGEWeb(gps As GeoPos)
+Try: On Error GoTo Catch
+    Dim cmd As String: cmd = """" & pfnFF & """" & " " & """" & MMain.GEWeb & gps.ToGEWeb & """"
+    Shell cmd, vbNormalFocus
+    Exit Sub
+Catch:
+    MsgBox "Could not start google earth, maybe googleearth.exe or firefox.exe not found"
 End Sub
 
 Public Function GetStr(ByVal v As Double) As String

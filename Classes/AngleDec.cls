@@ -183,6 +183,14 @@ Public Property Let Value(DecValue)
     m_Angle = DecValue
 End Property
 
+Public Function IsEqual(other As AngleDec) As Boolean
+'    If Me.Value <> other.Value Then Exit Function
+'    If Me.Dir <> other.Dir Then Exit Function
+'    IsEqual = True
+    IsEqual = Me.Value = other.Value
+    If IsEqual Then IsEqual = Me.Dir = other.Dir
+End Function
+
 Public Function ToRad()
     ToRad = CDec(m_Angle)
 End Function
@@ -354,8 +362,8 @@ Public Function Mul(ByVal Value) As AngleDec
     Set Mul = MNew.AngleDec(m_Angle * CDec(Value))
 End Function
 
-Public Function Div(ByVal Value) As AngleDec
-    Set Div = MNew.AngleDec(m_Angle / CDec(Value))
+Public Function div(ByVal Value) As AngleDec
+    Set div = MNew.AngleDec(m_Angle / CDec(Value))
 End Function
 
 Public Function Abss(a As Angle) As AngleDec
@@ -409,11 +417,11 @@ Public Function ArcusCosinus(ByVal x) As AngleDec       ' aka arccos
     Set ArcusCosinus = New AngleDec: ArcusCosinus.New_ ArcusCosinusF(CDec(x))
 End Function
 
-Public Function ArcusTangensF(ByVal T)    ' aka arctan
-    ArcusTangensF = VBA.Math.Atn(CDec(T))
+Public Function ArcusTangensF(ByVal t)    ' aka arctan
+    ArcusTangensF = VBA.Math.Atn(CDec(t))
 End Function
-Public Function ArcusTangens(ByVal T) As AngleDec      ' aka arctan
-    Set ArcusTangens = New AngleDec: ArcusTangens.New_ ArcusTangensF(CDec(T))
+Public Function ArcusTangens(ByVal t) As AngleDec      ' aka arctan
+    Set ArcusTangens = New AngleDec: ArcusTangens.New_ ArcusTangensF(CDec(t))
 End Function
 
 'ArcusTangensXY: also known as ATan2
@@ -466,11 +474,11 @@ Public Function ArcusSecans(ByVal x) As AngleDec       ' aka arcsec
     Set ArcusSecans = New AngleDec: ArcusSecans.New_ ArcusSecansF(CDec(x))
 End Function
 
-Public Function ArcusCotangensF(ByVal T)   ' aka arccot
-    ArcusCotangensF = MMath.Pi * CDec(0.5) - CDec(VBA.Math.Atn(CDec(T)))
+Public Function ArcusCotangensF(ByVal t)   ' aka arccot
+    ArcusCotangensF = MMath.Pi * CDec(0.5) - CDec(VBA.Math.Atn(CDec(t)))
 End Function
-Public Function ArcusCotangens(ByVal T) As AngleDec    ' aka arccot
-    Set ArcusCotangens = New AngleDec: ArcusCotangens.New_ ArcusCotangensF(CDec(T))
+Public Function ArcusCotangens(ByVal t) As AngleDec    ' aka arccot
+    Set ArcusCotangens = New AngleDec: ArcusCotangens.New_ ArcusCotangensF(CDec(t))
 End Function
 
 ' ###################### '  hyperbolic funktions   ' ##################### '
@@ -512,12 +520,12 @@ Public Function AreaCosinusHyperbolicus(ByVal x) As AngleDec      ' aka arcosh
     Set AreaCosinusHyperbolicus = New AngleDec: AreaCosinusHyperbolicus.New_ AreaCosinusHyperbolicusF(CDec(x))
 End Function
 
-Public Function AreaTangensHyperbolicusF(ByVal T)   ' aka artanh
-    If T < -1 Or 1 < T Then Exit Function
-    AreaTangensHyperbolicusF = VBA.Math.Log((1 + T) / (1 - T)) / 2
+Public Function AreaTangensHyperbolicusF(ByVal t)   ' aka artanh
+    If t < -1 Or 1 < t Then Exit Function
+    AreaTangensHyperbolicusF = VBA.Math.Log((1 + t) / (1 - t)) / 2
 End Function
-Public Function AreaTangensHyperbolicus(ByVal T) As AngleDec      ' aka artanh
-    Set AreaTangensHyperbolicus = New AngleDec: AreaTangensHyperbolicus.New_ AreaTangensHyperbolicusF(CDec(T))
+Public Function AreaTangensHyperbolicus(ByVal t) As AngleDec      ' aka artanh
+    Set AreaTangensHyperbolicus = New AngleDec: AreaTangensHyperbolicus.New_ AreaTangensHyperbolicusF(CDec(t))
 End Function
 
 Public Function AreaCosecansHyperbolicusF(ByVal x)   ' aka arcsch
@@ -574,12 +582,12 @@ Private Function Angle_ArcusCosinusF(ByVal x As Double) As Double
     Angle_ArcusCosinusF = Me.ArcusCosinusF(CDec(x))
 End Function
 
-Private Function Angle_ArcusCotangens(ByVal T As Double) As Angle
-    Set Angle_ArcusCotangens = Me.ArcusCotangens(CDec(T))
+Private Function Angle_ArcusCotangens(ByVal t As Double) As Angle
+    Set Angle_ArcusCotangens = Me.ArcusCotangens(CDec(t))
 End Function
 
-Private Function Angle_ArcusCotangensF(ByVal T As Double) As Double
-    Angle_ArcusCotangensF = Me.ArcusCotangensF(CDec(T))
+Private Function Angle_ArcusCotangensF(ByVal t As Double) As Double
+    Angle_ArcusCotangensF = Me.ArcusCotangensF(CDec(t))
 End Function
 
 Private Function Angle_ArcusSecans(ByVal x As Double) As Angle
@@ -598,12 +606,12 @@ Private Function Angle_ArcusSinusF(ByVal y As Double) As Double
     Angle_ArcusSinusF = Me.ArcusSinusF(CDec(y))
 End Function
 
-Private Function Angle_ArcusTangens(ByVal T As Double) As Angle
-    Set Angle_ArcusTangens = Me.ArcusTangens(CDec(T))
+Private Function Angle_ArcusTangens(ByVal t As Double) As Angle
+    Set Angle_ArcusTangens = Me.ArcusTangens(CDec(t))
 End Function
 
-Private Function Angle_ArcusTangensF(ByVal T As Double) As Double
-    Angle_ArcusTangensF = Me.ArcusTangensF(CDec(T))
+Private Function Angle_ArcusTangensF(ByVal t As Double) As Double
+    Angle_ArcusTangensF = Me.ArcusTangensF(CDec(t))
 End Function
 
 Private Function Angle_ArcusTangensXY(ByVal x As Double, ByVal y As Double) As Angle
@@ -654,12 +662,12 @@ Private Function Angle_AreaSinusHyperbolicusF(ByVal y As Double) As Double
     Angle_AreaSinusHyperbolicusF = Me.AreaSinusHyperbolicusF(CDec(y))
 End Function
 
-Private Function Angle_AreaTangensHyperbolicus(ByVal T As Double) As Angle
-    Set Angle_AreaTangensHyperbolicus = Me.AreaTangensHyperbolicus(CDec(T))
+Private Function Angle_AreaTangensHyperbolicus(ByVal t As Double) As Angle
+    Set Angle_AreaTangensHyperbolicus = Me.AreaTangensHyperbolicus(CDec(t))
 End Function
 
-Private Function Angle_AreaTangensHyperbolicusF(ByVal T As Double) As Double
-    Angle_AreaTangensHyperbolicusF = Me.AreaTangensHyperbolicusF(CDec(T))
+Private Function Angle_AreaTangensHyperbolicusF(ByVal t As Double) As Double
+    Angle_AreaTangensHyperbolicusF = Me.AreaTangensHyperbolicusF(CDec(t))
 End Function
 
 Private Function Angle_Cosecans() As Double
@@ -695,7 +703,7 @@ Private Property Get Angle_Dir() As String
 End Property
 
 Private Function Angle_Div(ByVal Value As Double) As Angle
-    Set Angle_Div = Me.Div(CDec(Value))
+    Set Angle_Div = Me.div(CDec(Value))
 End Function
 
 Private Property Let Angle_Grad(ByVal RHS As Long)
@@ -712,6 +720,10 @@ End Property
 Private Property Let Angle_GradF(ByVal Value As Double)
     Me.GradF = Value
 End Property
+
+Private Function Angle_IsEqual(other As Angle) As Boolean
+    Angle_IsEqual = Me.IsEqual(other)
+End Function
 
 Private Property Let Angle_Millisec(ByVal RHS As Long)
     Me.Millisec = RHS
